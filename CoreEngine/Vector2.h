@@ -14,11 +14,13 @@ public:
     static Vector2 one;
     static Vector2 zero;
 
-    Vector2 operator * (const float f) {
-        return {this->x * f, this->y * f};
-    }
-
     const char *toStr(int precision = 2);
+
+    Vector2 operator * (const float f) { return {this->x * f, this->y * f}; }
+    Vector2 operator / (const float f) { return {this->x / f, this->y / f}; }
+    Vector2 operator *= (const float f) { return {this->x * f, this->y * f}; }
+    Vector2 operator + (const Vector2 v) { return {this->x + v.x, this->y + v.y}; }
+    Vector2 operator - (const Vector2 v) { return {this->x - v.x, this->y - v.y}; }
 };
 
 

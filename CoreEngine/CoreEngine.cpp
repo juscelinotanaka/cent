@@ -3,10 +3,10 @@
 //
 
 #include "CoreEngine.h"
-#include "../PlayerObject.h"
 
 SDL_Renderer * CoreEngine::renderer = nullptr;
 std::vector<SceneObject*> CoreEngine::sceneObjects;
+Vector2 CoreEngine::screenSize;
 
 void CoreEngine::UpdateEvents() {
     Time::UpdateTimer();
@@ -43,18 +43,22 @@ bool CoreEngine::QuitApplication() {
     return Input::Quit();
 }
 
-void CoreEngine::SetGlobalRenderer(SDL_Renderer *pRenderer) {
+void CoreEngine::setGlobalRenderer(SDL_Renderer *pRenderer) {
     renderer = pRenderer;
     SceneObject::SetGlobalRenderer(pRenderer);
 }
 
-void CoreEngine::AddSceneObject(SceneObject * object) {
+void CoreEngine::AddSceneObject(SceneObject *object) {
     auto s = object;
 
-
-    std::string ss = typeid(s).name();
-    bool isit = typeid(s) == typeid(PlayerObject);
-    L::d("adding: %s ~%s~ %d", s->name, ss.c_str(), isit);
-
     sceneObjects.push_back(object);
+}
+
+void CoreEngine::setScreenSize(Vector2 scrSize) {
+    screenSize = scrSize;
+
+}
+
+Vector2 CoreEngine::getScreenSize() {
+    return screenSize;
 }

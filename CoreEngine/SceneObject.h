@@ -9,6 +9,7 @@
 #include "Vector2.h"
 #include <SDL.h>
 #include <iostream>
+#include <vector>
 
 class SceneObject {
 public:
@@ -18,11 +19,13 @@ public:
     float rotationZ;
     Vector2 scale = Vector2(1, 1);
     Vector2 velocity;
+    Vector2 imageSize;
 
     // methods
-    void SetImage(const char * imgPath);
+    void SetImage(const char * imgPath, bool onlyAddToPool = false);
     void RenderOnScreen();
     void Destroy();
+    Vector2 getRealSize();
 
     // virtual methods
     virtual void Update();
@@ -32,11 +35,9 @@ public:
     bool tickUpdate = false;
 
 private:
-    SDL_Texture * texture;
+    SDL_Texture * currentTexture;
+    std::vector<SDL_Texture *> texturePool;
     SDL_Rect rect;
-    Vector2 imageSize;
-    int imageWidth;
-    int imageHeight;
 
     // static attributes
     static SDL_Renderer * renderer;

@@ -3,18 +3,21 @@
 //
 
 #include "Input.h"
+#include "L.h"
 #include <SDL.h>
 
 enum KeyState {
     Idle,
-    Up,
     Down,
-    Pressed
+    Pressed,
+    Up
 };
 
 KeyState mouseState;
 bool mouseIsDown = false;
+bool escIsDown = false;
 bool quit;
+KeyState escape;
 Vector2 Input::mousePosition = Vector2();
 
 
@@ -22,6 +25,7 @@ void Input::HandleEvents() {
     SDL_Event event;
 
     bool mouseChanged = false;
+    bool escChanged = false;
     while (SDL_PollEvent(&event))
     {
         switch (event.type)
@@ -45,11 +49,31 @@ void Input::HandleEvents() {
                 mouseState = Up;
                 mouseIsDown = false;
                 break;
+
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        escChanged = escIsDown = true;
+                        escape = Down;
+                }
+                break;
+
+            case SDL_KEYUP:
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        escChanged = true;
+                        escIsDown = false;
+                        escape = Up;
+                }
+                break;
         }
     }
 
     if (!mouseChanged)
         mouseState = mouseIsDown ? Pressed : Idle;
+
+    if (!escChanged)
+        escape = escIsDown ? Pressed : Idle;
 }
 
 bool Input::Quit() {
@@ -66,6 +90,10 @@ bool Input::GetMousePressed() {
 
 bool Input::GetMouseUp() {
     return mouseState == Up;
+}
+
+bool Input::GetEscape() {
+    return escape == Down;
 }
 
 

@@ -9,21 +9,28 @@
 #include "Input.h"
 #include "Time.h"
 #include "L.h"
+#include "Math.h"
 #include <vector>
 
 class CoreEngine {
+private:
+    static std::vector<SceneObject*> sceneObjects;
+    static SDL_Renderer *renderer;
+    static Vector2 screenSize;
+
 public:
     static void UpdateEvents();
     static void UpdateActions();
     static void UpdateRendering();
 
     static bool QuitApplication();
-    static void SetGlobalRenderer(SDL_Renderer *pRenderer);
-    static void AddSceneObject(SceneObject * object);
+    static void AddSceneObject(SceneObject *object);
 
-private:
-    static std::vector<SceneObject*> sceneObjects;
-    static SDL_Renderer *renderer;
+    static void setGlobalRenderer(SDL_Renderer *pRenderer);
+
+    static void setScreenSize(Vector2 scrSize);
+    static Vector2 getScreenSize();
+
 };
 
 
