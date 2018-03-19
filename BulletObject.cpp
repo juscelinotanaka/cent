@@ -16,6 +16,8 @@ BulletObject::BulletObject() {
 
     SetImage("data/Laser.bmp");
     scale = Vector2::one * 2;
+
+    StopFire();
 }
 
 // fires a bullet at the position passed by the player
