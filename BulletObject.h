@@ -11,9 +11,13 @@
 class BulletObject: public SceneObject {
 public:
     BulletObject();
+
     void Update() override;
+    void OnCollisionDetected(SceneObject *other) override;
+
     bool isFired = false;
     void Fire(Vector2 position);
+    void StopFire();
 };
 
 

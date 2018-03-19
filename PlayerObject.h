@@ -10,10 +10,11 @@
 
 class PlayerObject: public SceneObject {
 public:
-    PlayerObject(const char *string);
+    PlayerObject(const char *name);
     BulletObject bullet;
 
-    void Update();
+    void Update() override;
+    void OnCollisionDetected(SceneObject *other) override;
 };
 
 

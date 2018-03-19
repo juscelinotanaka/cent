@@ -4,6 +4,10 @@
 
 #include "Math.h"
 
-double Math::Clamp(double x, double min, double max) {
+double Math::clamp(double x, double min, double max) {
     return std::max(min, std::min(x, max));
+}
+
+int Math::Signal(int number) {
+    return number < 0 ? -1 : 1;
 }

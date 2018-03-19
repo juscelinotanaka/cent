@@ -31,6 +31,9 @@ void SceneObject::SetGlobalRenderer(SDL_Renderer *pRenderer) {
 }
 
 void SceneObject::RenderOnScreen() {
+    if (currentTexture == nullptr || !enable)
+        return;
+
     rect.x = position.x;
     rect.y = position.y;
     rect.w = imageSize.x * scale.x;
@@ -43,11 +46,24 @@ void SceneObject::Destroy() {
     SDL_DestroyTexture(currentTexture);
 }
 
-void SceneObject::Update() { L::d(""); }
-
 // this method returns the imageSize multiplied by the scale of the image
 Vector2 SceneObject::getRealSize() {
     return Vector2(imageSize.x * scale.x, imageSize.y * scale.y);
 }
 
+void SceneObject::setSharedTexture(std::vector<SDL_Texture *> *textures) {
+    this->texturePool = *textures;
+}
 
+std::vector<SDL_Texture *> * SceneObject::getSharedTexture() {
+    return &texturePool;
+}
+
+void SceneObject::SetImageFromPool(int i) {
+    currentTexture = texturePool[i];
+}
+
+void SceneObject::Update() { L::d("Generic Update. It should be override."); }
+void SceneObject::OnCollisionDetected(SceneObject *other) {
+    L::d("Generic Collision. It should be override. - other: %s", other != nullptr ? other->tag : "null");
+}

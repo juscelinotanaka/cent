@@ -21,6 +21,7 @@ private:
 public:
     static void UpdateEvents();
     static void UpdateActions();
+    static void UpdateCollisions();
     static void UpdateRendering();
 
     static bool QuitApplication();
@@ -31,6 +32,12 @@ public:
     static void setScreenSize(Vector2 scrSize);
     static Vector2 getScreenSize();
 
+    static void DestroyAll();
+
+    static void ListAllObjects();
+
+    static bool overlaps(SceneObject *objA, SceneObject *objB);
+    static Vector2 overlapAmount(SceneObject *objA, SceneObject *objB);
 };
 
 

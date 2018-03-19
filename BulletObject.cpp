@@ -4,6 +4,20 @@
 
 #include "BulletObject.h"
 
+BulletObject::BulletObject() {
+    tickUpdate = true;
+    enableCollision = true;
+
+    name = "Player Bullet";
+    tag = "Bullet";
+
+    // 60 cells per second * 16 pixels per cell * scale = pixels-cells per second
+    velocity = Vector2(0, -60 * 16);
+
+    SetImage("data/Laser.bmp");
+    scale = Vector2::one * 2;
+}
+
 // fires a bullet at the position passed by the player
 void BulletObject::Fire(Vector2 position) {
     if (isFired)
@@ -20,13 +34,17 @@ void BulletObject::Update() {
     position = position + velocity * Time::deltaTime;
 
     if (position.y < -16) // off screen
-        isFired = false;
+        StopFire();
 }
 
-BulletObject::BulletObject() {
-    tickUpdate = true;
+void BulletObject::OnCollisionDetected(SceneObject *other) {
+    if (strcmp(other->tag, "Mushroom") == 0) {
+        StopFire();
+        other->OnCollisionDetected(this);
+    }
+}
 
-    // 60 cells per second * 16 pixels per cell = pixels-cells per second
-    velocity = Vector2(0, -60 * 16);
-    SetImage("data/Laser.bmp");
+void BulletObject::StopFire() {
+    isFired = false;
+    position = Vector2(-20, -20);
 }
