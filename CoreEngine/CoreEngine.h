@@ -38,6 +38,9 @@ public:
 
     static bool overlaps(SceneObject *objA, SceneObject *objB);
     static Vector2 overlapAmount(SceneObject *objA, SceneObject *objB);
+
+    static void setWindow(SDL_Window *pWindow);
+    static SDL_Window *window;
 };
 
 

@@ -4,7 +4,6 @@
 
 #include "Input.h"
 #include "L.h"
-#include <SDL.h>
 
 enum KeyState {
     Idle,
@@ -19,12 +18,14 @@ bool escIsDown = false;
 bool quit;
 KeyState escape;
 Vector2 Input::mousePosition = Vector2();
+Vector2 Input::mouseDelta = Vector2();
 
 
 void Input::HandleEvents() {
     SDL_Event event;
 
-    bool mouseChanged = false;
+    bool mouseStateChanged = false;
+    bool mousePosChanged = false;
     bool escChanged = false;
     while (SDL_PollEvent(&event))
     {
@@ -35,17 +36,19 @@ void Input::HandleEvents() {
                 break;
 
             case SDL_MOUSEMOTION:
+                mousePosChanged = true;
                 mousePosition = Vector2(event.motion.x, event.motion.y);
+                mouseDelta = Vector2(event.motion.xrel, event.motion.yrel);
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                mouseChanged = true;
+                mouseStateChanged = true;
                 mouseState = Down;
                 mouseIsDown = true;
                 break;
 
             case SDL_MOUSEBUTTONUP:
-                mouseChanged = true;
+                mouseStateChanged = true;
                 mouseState = Up;
                 mouseIsDown = false;
                 break;
@@ -69,7 +72,10 @@ void Input::HandleEvents() {
         }
     }
 
-    if (!mouseChanged)
+    if (!mousePosChanged)
+        mouseDelta = Vector2::zero;
+
+    if (!mouseStateChanged)
         mouseState = mouseIsDown ? Pressed : Idle;
 
     if (!escChanged)

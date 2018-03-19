@@ -16,6 +16,7 @@ public:
     static bool Quit();
     static void HandleEvents();
     static Vector2 mousePosition;
+    static Vector2 mouseDelta;
 
     static bool GetEscape();
 };

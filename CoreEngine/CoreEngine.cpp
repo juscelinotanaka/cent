@@ -7,30 +7,28 @@
 SDL_Renderer * CoreEngine::renderer = nullptr;
 std::vector<SceneObject*> CoreEngine::sceneObjects;
 Vector2 CoreEngine::screenSize;
+SDL_Window * CoreEngine::window;
 
+/// calculates the the amount that one image A is overlapping image B
 Vector2 CoreEngine::overlapAmount(SceneObject *objA, SceneObject *objB) {
-    SceneObject a = *objA;
-    SceneObject b = *objB;
-
     int leftA, rightA, topA, bottomA;
     int leftB, rightB, topB, bottomB;
 
-    leftA = a.position.x;
-    rightA = a.position.x + a.getRealSize().x;
-    topA = a.position.y;
-    bottomA = a.position.y + a.getRealSize().y;
+    leftA = objA->position.x;
+    rightA = objA->position.x + objA->getRealSize().x;
+    topA = objA->position.y;
+    bottomA = objA->position.y + objA->getRealSize().y;
 
-    leftB = b.position.x;
-    rightB = b.position.x + b.getRealSize().x;
-    topB = b.position.y;
-    bottomB = b.position.y + b.getRealSize().y;
+    leftB = objB->position.x;
+    rightB = objB->position.x + objB->getRealSize().x;
+    topB = objB->position.y;
+    bottomB = objB->position.y + objB->getRealSize().y;
 
     int top = topB - topA;
-    int bottom = bottomB - bottomA;
     int left = leftA - leftB;
     int right = rightA - rightB;
 
-    Vector2 diff = a.getRealSize() - b.getRealSize();
+    Vector2 diff = objA->getRealSize() - objB->getRealSize();
     diff.x = abs(diff.x);
     diff.y = abs(diff.y);
 
@@ -38,43 +36,38 @@ Vector2 CoreEngine::overlapAmount(SceneObject *objA, SceneObject *objB) {
     int signal = Math::Signal(left);
 
     if (abs(left) < diff.x)
-        x = signal * a.getRealSize().x;
+        x = signal * objA->getRealSize().x;
     else
-        x = signal * (a.getRealSize().x - abs(signal == -1 ? left : right));
+        x = signal * (objA->getRealSize().x - abs(signal == -1 ? left : right));
 
     signal = Math::Signal(top);
-    int y = -1 * signal * (a.getRealSize().y - abs(top));
-
-    L::d("%d %d %d", top, abs(top), y);
+    int y = -1 * signal * (objA->getRealSize().y - abs(top));
 
     return Vector2(x, y);
 }
 
 bool CoreEngine::overlaps(SceneObject *objA, SceneObject *objB) {
 
-    SceneObject a = *objA;
-    SceneObject b = *objB;
+    int leftA, rightA, topA, bottomA, leftB, rightB, topB, bottomB;
 
-    int leftA, rightA, topA, bottomA;
-    int leftB, rightB, topB, bottomB;
+    leftA = objA->position.x;
+    rightA = objA->position.x + objA->getRealSize().x;
+    topA = objA->position.y;
+    bottomA = objA->position.y + objA->getRealSize().y;
 
-    leftA = a.position.x;
-    rightA = a.position.x + a.getRealSize().x;
-    topA = a.position.y;
-    bottomA = a.position.y + a.getRealSize().y;
-
-    leftB = b.position.x;
-    rightB = b.position.x + b.getRealSize().x;
-    topB = b.position.y;
-    bottomB = b.position.y + b.getRealSize().y;
+    leftB = objB->position.x;
+    rightB = objB->position.x + objB->getRealSize().x;
+    topB = objB->position.y;
+    bottomB = objB->position.y + objB->getRealSize().y;
 
     //If any of the sides from A are outside of B
-    return (bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB) ? false : true;
+    return !(bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB);
 
 }
 
 void CoreEngine::UpdateCollisions() {
     for (auto s : sceneObjects) {
+        // check colision only for those which activated collision and are enable
         if (!s->enableCollision || !s->enable)
             continue;
 
@@ -106,7 +99,23 @@ void CoreEngine::UpdateActions() {
 }
 
 void CoreEngine::UpdateRendering() {
+
+    SDL_SetRenderDrawColor( renderer, 0x00, 0x00, 0x00, 0x00 );
     SDL_RenderClear(renderer);
+
+    // draw mouse position for debugging
+    bool drawMouseDebug = false;
+    if (drawMouseDebug) {
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0xFF);
+        SDL_RenderDrawLine(renderer,
+                           (int) Input::mousePosition.x - 10, (int) Input::mousePosition.y - 10,
+                           (int) Input::mousePosition.x + 10, (int) Input::mousePosition.y + 10);
+
+        SDL_RenderDrawLine(renderer,
+                           (int) Input::mousePosition.x + 10, (int) Input::mousePosition.y - 10,
+                           (int) Input::mousePosition.x - 10, (int) Input::mousePosition.y + 10);
+    }
+
 
     // loop rendering each object on scene
     for (auto s : sceneObjects) {
@@ -153,6 +162,10 @@ void CoreEngine::ListAllObjects() {
         else
             L::d("Scene Object is null: %d", i);
     }
+}
+
+void CoreEngine::setWindow(SDL_Window *pWindow) {
+    window = pWindow;
 }
 
 
