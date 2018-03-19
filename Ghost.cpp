@@ -50,9 +50,9 @@ void Ghost::Update() {
 void Ghost::OnCollisionDetected(SceneObject *other) {
     if (other->isTag("Bullet")) {
         L::d("%s got hit", name);
-        GameManager::GhostShot(position);
+        GameManager::GhostShot(this);
     } else if (other->isTag("Player")) {
-        L::d("player dies to: %s", name);
+//        L::d("player dies to: %s", name);
     } else if (other->isTag("Mushroom") || other->isTag("Wall")) {
 //        L::d("%s - hit: %s - x: %f <> %d - %d", name, other->name, position.x, (int)round(position.x / 16), movingRight);
         ToggleLeftRight();
@@ -82,4 +82,12 @@ void Ghost::MoveToNextLine() {
 
     position.x = xPos;
     position.y = yPos;
+}
+
+void Ghost::resetGhost() {
+    enable = true;
+    setImageFromPool(0);
+    movingDown = true;
+    movingRight = true;
+    ToggleLeftRight();
 }

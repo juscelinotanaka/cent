@@ -16,3 +16,9 @@ void Mushroom::OnCollisionDetected(SceneObject *other) {
         setImageFromPool(hits);
 }
 
+void Mushroom::resetMushroom() {
+    hits = 0;
+    setImageFromPool(hits);
+    enable = true;
+}
+

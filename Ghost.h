@@ -17,13 +17,14 @@ public:
 
     void ToggleLeftRight();
     void ToggleUpDown();
+    void MoveToNextLine();
+    void resetGhost();
     bool alignToPrevious = false;
 
 private:
     bool movingRight = true;
     bool movingDown = true;
 
-    void MoveToNextLine();
 };
 
 

@@ -16,13 +16,14 @@ int GameManager::ghostsDestroyed;
 std::vector<Ghost *> GameManager::ghosts;
 
 bool GameManager::gameStarted = false;
+Player * GameManager::player;
 
 void GameManager::PrepareGame() {
 
     // create player object and add it to the scene
-    Player * s = new Player("Main Char");
-    s->scale = Vector2::one * 2;
-    CoreEngine::AddSceneObject(s);
+    player = new Player("Main Char");
+    player->scale = Vector2::one * 2;
+    CoreEngine::AddSceneObject(player);
 
     SceneObject * l = new SceneObject("Left Wall");
     l->setImage("data/Laser.bmp");
@@ -141,6 +142,67 @@ bool GameManager::isGameStarted() {
     return gameStarted;
 }
 
-void GameManager::GhostShot(Vector2 position) {
-    
+void GameManager::GhostShot(Ghost *ghost) {
+    player->bullet.StopFire();
+
+    for (int i = 0; i < ghosts.size(); ++i) {
+        auto found = ghosts[i];
+        if (found == ghost) {
+            found->enable = false;
+            if (i < ghosts.size() - 1 && ghosts[i + 1]->enable) {
+                ghosts[i + 1]->setImageFromPool(1);
+            }
+            break;
+        }
+    }
+
+    auto newMushroom = GetMushroomFromPool();
+    newMushroom->position = ghost->position;
+
+    CheckWinningCondition();
+}
+
+Mushroom * GameManager::GetMushroomFromPool() {
+    Mushroom * m;
+    if (mushroomPool.size() > 0) {
+        m = mushroomPool[mushroomPool.size() - 1];
+        m->resetMushroom();
+        mushroomPool.pop_back();
+        L::d("Mushroom from pool: %s - on pool: %d", m->tag, mushroomPool.size());
+
+    } else {
+        m = CreateNewMushroom();
+        L::d("new Mushroom created: %s", m->tag);
+        CoreEngine::AddSceneObject(m);
+    }
+    return m;
+}
+
+void GameManager::CheckWinningCondition() {
+    bool anyEnable = false;
+    for (int i = 0; i < ghosts.size(); ++i) {
+        if (ghosts[i]->enable) {
+            anyEnable = true;
+            break;
+        }
+    }
+
+    if (!anyEnable) {
+        RespawnGhost();
+    }
+}
+
+void GameManager::RespawnGhost() {
+    for (int i = 0; i < mushrooms.size(); ++i) {
+        auto m = mushrooms[i];
+        if (0 == (int)round(m->position.y)) {
+            m->enable = false;
+        }
+    }
+    for (int i = 0; i < 12; ++i) {
+        ghosts[i]->resetGhost();
+        ghosts[i]->position = Vector2((16+i), 0) * 16;
+    }
+
+    ghosts[0]->setImageFromPool(1);
 }

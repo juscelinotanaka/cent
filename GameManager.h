@@ -8,6 +8,7 @@
 
 #include "Mushroom.h"
 #include "Ghost.h"
+#include "Player.h"
 
 class GameManager {
 public:
@@ -24,7 +25,7 @@ public:
 
     static bool isGameStarted();
 
-    static void GhostShot(Vector2 position);
+    static void GhostShot(Ghost *ghost);
 
 private:
     static bool gameStarted;
@@ -38,6 +39,13 @@ private:
 
     static Mushroom *CreateNewMushroom();
 
+    static Player *player;
+
+    static Mushroom *GetMushroomFromPool();
+
+    static void CheckWinningCondition();
+
+    static void RespawnGhost();
 };
 
 

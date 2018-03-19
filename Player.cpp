@@ -3,6 +3,7 @@
 //
 
 #include "Player.h"
+#include "GameManager.h"
 
 Vector2 lastMousePos;
 
@@ -45,7 +46,7 @@ void Player::Update() {
 
     this->position = Vector2(x, y);
 
-    if (Input::GetMousePressed()) {
+    if (Input::GetMousePressed() && GameManager::isGameStarted()) {
         Vector2 bulletOffset = Vector2(6, -8);
         bullet.Fire(position + bulletOffset);
     }

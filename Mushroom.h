@@ -12,6 +12,7 @@ public:
     Mushroom(const char *name);
 
     void OnCollisionDetected(SceneObject *other) override;
+    void resetMushroom();
 
     int hits = 0;
 };
