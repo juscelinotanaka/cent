@@ -6,7 +6,8 @@
 #define CENT_GAMEMANAGER_H
 
 
-#include "MushroomObject.h"
+#include "Mushroom.h"
+#include "Ghost.h"
 
 class GameManager {
 public:
@@ -14,17 +15,29 @@ public:
     static void StartGame();
 
     // list of mushrooms on scene
-    static std::vector<MushroomObject *> mushrooms;
-    static std::vector<MushroomObject *> mushroomPool;
+    static std::vector<Mushroom *> mushrooms;
+    static std::vector<Mushroom *> mushroomPool;
+    static std::vector<Ghost *> ghosts;
 
-    static void MushroomDestroyed(MushroomObject *m);
+    static void MushroomDestroyed(Mushroom *m);
+    static Ghost *GetPreviousGhost(Ghost *me);
+
+    static bool isGameStarted();
+
+    static void GhostShot(Vector2 position);
 
 private:
+    static bool gameStarted;
+
     // a mushroom to hold the shared texture pool to reduce memory usage
-    static MushroomObject * mushroomPrefab;
+    static Mushroom * mushroomTemplate;
     static int mushroomsDestroyed;
 
-    static MushroomObject *CreateNewMushroom();
+    static Ghost * ghostTemplate;
+    static int ghostsDestroyed;
+
+    static Mushroom *CreateNewMushroom();
+
 };
 
 

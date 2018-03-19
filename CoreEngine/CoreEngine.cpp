@@ -33,14 +33,14 @@ Vector2 CoreEngine::overlapAmount(SceneObject *objA, SceneObject *objB) {
     diff.y = abs(diff.y);
 
     int x;
-    int signal = Math::Signal(left);
+    int signal = Math::signal(left);
 
     if (abs(left) < diff.x)
         x = signal * objA->getRealSize().x;
     else
         x = signal * (objA->getRealSize().x - abs(signal == -1 ? left : right));
 
-    signal = Math::Signal(top);
+    signal = Math::signal(top);
     int y = -1 * signal * (objA->getRealSize().y - abs(top));
 
     return Vector2(x, y);

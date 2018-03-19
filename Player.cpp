@@ -2,23 +2,22 @@
 // Created by Juscelino Tanaka on 16/03/18.
 //
 
-#include "PlayerObject.h"
+#include "Player.h"
 
 Vector2 lastMousePos;
 
-PlayerObject::PlayerObject(const char *name) {
+Player::Player(const char *name) : SceneObject(name) {
     this->tickUpdate = true;
     enableCollision = true;
 
-    this->name = name;
     this->tag = "Player";
 
-    SetImage("data/Player.bmp");
+    setImage("data/Player.bmp");
 
     CoreEngine::AddSceneObject(&bullet);
 }
 
-void PlayerObject::Update() {
+void Player::Update() {
 
     bool useDelta = true;
     double x, y;
@@ -53,7 +52,7 @@ void PlayerObject::Update() {
 
 }
 
-void PlayerObject::OnCollisionDetected(SceneObject *other) {
+void Player::OnCollisionDetected(SceneObject *other) {
     if (!strcmp(other->tag, "Mushroom")) {
         Vector2 overlaping = CoreEngine::overlapAmount(this, other);
 

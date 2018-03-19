@@ -8,6 +8,6 @@ double Math::clamp(double x, double min, double max) {
     return std::max(min, std::min(x, max));
 }
 
-int Math::Signal(int number) {
+int Math::signal(int number) {
     return number < 0 ? -1 : 1;
 }

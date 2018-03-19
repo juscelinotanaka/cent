@@ -7,7 +7,7 @@
 
 SDL_Renderer * SceneObject::renderer = nullptr;
 
-void SceneObject::SetImage(const char *imgPath, bool onlyAddToPool) {
+void SceneObject::setImage(const char *imgPath, bool onlyAddToPool) {
 
     if (renderer == nullptr)
         return;
@@ -34,10 +34,11 @@ void SceneObject::RenderOnScreen() {
     if (currentTexture == nullptr || !enable)
         return;
 
-    rect.x = position.x;
-    rect.y = position.y;
-    rect.w = imageSize.x * scale.x;
-    rect.h = imageSize.y * scale.y;
+    // (int) = pixel perfect
+    rect.x = (int)position.x;
+    rect.y = (int)position.y;
+    rect.w = (int)(imageSize.x * scale.x);
+    rect.h = (int)(imageSize.y * scale.y);
 
     SDL_RenderCopy(renderer, currentTexture, nullptr, &rect);
 }
@@ -59,11 +60,23 @@ std::vector<SDL_Texture *> * SceneObject::getSharedTexture() {
     return &texturePool;
 }
 
-void SceneObject::SetImageFromPool(int i) {
+void SceneObject::setImageFromPool(int i) {
     currentTexture = texturePool[i];
 }
 
 void SceneObject::Update() { L::d("Generic Update. It should be override."); }
 void SceneObject::OnCollisionDetected(SceneObject *other) {
     L::d("Generic Collision. It should be override. - other: %s", other != nullptr ? other->tag : "null");
+}
+
+SceneObject::SceneObject(const char *name) {
+    this->name = name;
+}
+
+bool SceneObject::isTag(const char *aTag) {
+    return !strcmp(tag, aTag);
+}
+
+bool SceneObject::isName(const char *aName) {
+    return !strcmp(name, aName);
 }

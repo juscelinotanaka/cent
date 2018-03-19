@@ -1,7 +1,7 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include "CoreEngine/CoreEngine.h"
-#include "PlayerObject.h"
+#include "Player.h"
 #include "GameManager.h"
 
 
@@ -17,12 +17,10 @@ int main()
                                    (int) CoreEngine::getScreenSize().x, (int) CoreEngine::getScreenSize().y, 0);
 
     CoreEngine::setWindow(window);
-    auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     CoreEngine::setGlobalRenderer(renderer);
 
     GameManager::PrepareGame();
-
-    GameManager::StartGame();
 
     while (!CoreEngine::QuitApplication())
     {
@@ -35,9 +33,13 @@ int main()
         CoreEngine::UpdateRendering();
 
         if (Input::GetEscape()) {
-//            CoreEngine::ListAllObjects();
+            CoreEngine::ListAllObjects();
             hideMouse = hideMouse == SDL_TRUE ? SDL_FALSE : SDL_TRUE;
             SDL_SetRelativeMouseMode(hideMouse);
+        }
+
+        if (!GameManager::isGameStarted() && Input::GetMouseUp()) {
+            GameManager::StartGame();
         }
 //        L::d("fps: %f (%f) - mouse pos: %s", Time::fps, Time::deltaTime, Input::mousePosition.toStr());
     }

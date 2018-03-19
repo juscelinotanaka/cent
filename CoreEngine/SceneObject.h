@@ -14,6 +14,7 @@
 class SceneObject {
 public:
     // attributes
+    SceneObject(const char * name);
     const char *name;
     const char *tag;
     bool enable = true;
@@ -27,7 +28,7 @@ public:
     Vector2 getRealSize();
 
     // methods
-    void SetImage(const char * imgPath, bool onlyAddToPool = false);
+    void setImage(const char *imgPath, bool onlyAddToPool = false);
     void RenderOnScreen();
     void Destroy();
 
@@ -42,10 +43,13 @@ public:
 
     void setSharedTexture(std::vector<SDL_Texture *> *textures);
     std::vector<SDL_Texture *> * getSharedTexture();
-    void SetImageFromPool(int i);
+    void setImageFromPool(int i);
+    bool isTag(const char * aTag);
+    bool isName(const char * aName);
 
 protected:
     std::vector<SDL_Texture *> texturePool;
+
 
 private:
     SDL_Texture * currentTexture;

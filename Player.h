@@ -6,12 +6,12 @@
 #define CENT_PLAYEROBJECT_H
 
 #include "CoreEngine/CoreEngine.h"
-#include "BulletObject.h"
+#include "Bullet.h"
 
-class PlayerObject: public SceneObject {
+class Player: public SceneObject {
 public:
-    PlayerObject(const char *name);
-    BulletObject bullet;
+    Player(const char *name);
+    Bullet bullet;
 
     void Update() override;
     void OnCollisionDetected(SceneObject *other) override;

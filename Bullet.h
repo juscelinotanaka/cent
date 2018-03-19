@@ -8,9 +8,9 @@
 
 #include "CoreEngine/CoreEngine.h"
 
-class BulletObject: public SceneObject {
+class Bullet: public SceneObject {
 public:
-    BulletObject();
+    Bullet();
 
     void Update() override;
     void OnCollisionDetected(SceneObject *other) override;

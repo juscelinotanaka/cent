@@ -7,9 +7,9 @@
 
 #include "CoreEngine/CoreEngine.h"
 
-class MushroomObject: public SceneObject {
+class Mushroom: public SceneObject {
 public:
-    MushroomObject(char *n);
+    Mushroom(const char *name);
 
     void OnCollisionDetected(SceneObject *other) override;
 

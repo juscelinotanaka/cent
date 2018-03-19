@@ -10,8 +10,7 @@
 class Math {
 public:
     static double clamp(double x, double min, double max);
-    static int Signal(int left);
-
+    static int signal(int left);
 };
 
 
