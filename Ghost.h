@@ -15,9 +15,9 @@ public:
     void Update() override;
     void OnCollisionDetected(SceneObject *other) override;
 
-    void ToggleLeftRight();
-    void ToggleUpDown();
-    void MoveToNextLine();
+    void toggleLeftRight();
+    void toggleUpDown();
+    void moveToNextLine();
     void resetGhost();
     bool alignToPrevious = false;
 

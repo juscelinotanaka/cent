@@ -25,19 +25,19 @@ void GameManager::PrepareGame() {
     player->scale = Vector2::one * 2;
     CoreEngine::AddSceneObject(player);
 
-    SceneObject * l = new SceneObject("Left Wall");
-    l->setImage("data/Laser.bmp");
-    l->tag = "Wall";
-    l->scale = Vector2(32, 60);
-    l->position = Vector2(-32, 0);
-    CoreEngine::AddSceneObject(l);
+    SceneObject * w = new SceneObject("Left Wall");
+    w->setImage("data/Laser.bmp");
+    w->tag = "Wall";
+    w->scale = Vector2(32, 60);
+    w->position = Vector2(-32, 0);
+    CoreEngine::AddSceneObject(w);
 
-    l = new SceneObject("Right Wall");
-    l->setImage("data/Laser.bmp");
-    l->tag = "Wall";
-    l->scale = Vector2(32, 60);
-    l->position = Vector2(CoreEngine::getScreenSize().x, 0);
-    CoreEngine::AddSceneObject(l);
+    w = new SceneObject("Right Wall");
+    w->setImage("data/Laser.bmp");
+    w->tag = "Wall";
+    w->scale = Vector2(32, 60);
+    w->position = Vector2(CoreEngine::getScreenSize().x, 0);
+    CoreEngine::AddSceneObject(w);
 
     // prepare one mushroom to share texture with all others
     mushroomTemplate = new Mushroom("Mushroom Template");
@@ -71,13 +71,12 @@ void GameManager::StartGame() {
 
         CoreEngine::AddSceneObject(m);
     }
-//    MushroomDestroyed(mushrooms[0]);
-//    mushrooms[0]->position = Vector2(29, 2) * 16;
+//    mushrooms[0]->position = Vector2(29, 2) * 16; // debug
 
     // since we wont create new ghost beyond these, we dont need a CreateGhost method
     for (int i = 16; i < 16 + 12; ++i) {
 
-        Ghost * g = new Ghost("Ghosturus");
+        Ghost * g = new Ghost("Ghostus");
 
         // avoid reallocating new textures to save memory
         g->tag = "Ghost";

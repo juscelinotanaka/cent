@@ -13,7 +13,7 @@ Ghost::Ghost(const char * name) : SceneObject(name) {
     velocity = Vector2(8 * 16 * 2, 0);
 
     // switch it to start going to left
-    ToggleLeftRight();
+    toggleLeftRight();
 }
 
 void Ghost::Update() {
@@ -39,11 +39,11 @@ void Ghost::Update() {
 
 
     if (position.y < 0 || position.y >= CoreEngine::getScreenSize().y) {
-        ToggleUpDown();
+        toggleUpDown();
         // make it move back to the last line (up or down)
-        MoveToNextLine();
+        moveToNextLine();
         // make it move to the next line (otherwise it will just come back on the same line)
-        MoveToNextLine();
+        moveToNextLine();
     }
 }
 
@@ -55,21 +55,21 @@ void Ghost::OnCollisionDetected(SceneObject *other) {
 //        L::d("player dies to: %s", name);
     } else if (other->isTag("Mushroom") || other->isTag("Wall")) {
 //        L::d("%s - hit: %s - x: %f <> %d - %d", name, other->name, position.x, (int)round(position.x / 16), movingRight);
-        ToggleLeftRight();
-        MoveToNextLine();
+        toggleLeftRight();
+        moveToNextLine();
     }
 }
 
-void Ghost::ToggleLeftRight() {
+void Ghost::toggleLeftRight() {
     movingRight = !movingRight;
     velocity.x = -1 * velocity.x;
 }
 
-void Ghost::ToggleUpDown() {
+void Ghost::toggleUpDown() {
     movingDown = !movingDown;
 }
 
-void Ghost::MoveToNextLine() {
+void Ghost::moveToNextLine() {
     float xPos, yPos;
 
     alignToPrevious = true;
@@ -89,5 +89,5 @@ void Ghost::resetGhost() {
     setImageFromPool(0);
     movingDown = true;
     movingRight = true;
-    ToggleLeftRight();
+    toggleLeftRight();
 }

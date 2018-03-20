@@ -15,11 +15,6 @@ public:
     static void PrepareGame();
     static void StartGame();
 
-    // list of mushrooms on scene
-    static std::vector<Mushroom *> mushrooms;
-    static std::vector<Mushroom *> mushroomPool;
-    static std::vector<Ghost *> ghosts;
-
     static void MushroomDestroyed(Mushroom *m);
     static Ghost *GetPreviousGhost(Ghost *me);
 
@@ -28,6 +23,11 @@ public:
     static void GhostShot(Ghost *ghost);
 
 private:
+    // list of mushrooms on scene
+    static std::vector<Mushroom *> mushrooms;
+    static std::vector<Mushroom *> mushroomPool;
+    static std::vector<Ghost *> ghosts;
+
     static bool gameStarted;
 
     // a mushroom to hold the shared texture pool to reduce memory usage
