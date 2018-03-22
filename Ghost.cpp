@@ -16,6 +16,11 @@ Ghost::Ghost(const char * name) : SceneObject(name) {
 }
 
 void Ghost::Update() {
+    // 8 cells per second * 16 pixels per cell
+    auto speed = 8 * 16 * speedMultiplier;
+
+    velocity.x = (movingRight ? 1 : -1) * (horizontal ? speed : 0);
+    velocity.y = (movingDown ? 1 : -1) * (!horizontal ? speed : 0);
 
     position = position + velocity * Time::deltaTime;
 
@@ -58,13 +63,13 @@ void Ghost::Update() {
     }
 
 
-    if (position.y < 0 || position.y >= CoreEngine::getScreenSize().y) {
-        toggleUpDown();
-        // make it move back to the last line (up or down)
-        moveToNextLine();
-        // make it move to the next line (otherwise it will just come back on the same line)
-        moveToNextLine();
-    }
+//    if (position.y < 0 || position.y >= CoreEngine::getScreenSize().y) {
+//        toggleUpDown();
+//        // make it move back to the last line (up or down)
+//        moveToNextLine();
+//        // make it move to the next line (otherwise it will just come back on the same line)
+//        moveToNextLine();
+//    }
 }
 
 void Ghost::OnCollisionDetected(SceneObject *other) {
@@ -78,8 +83,14 @@ void Ghost::OnCollisionDetected(SceneObject *other) {
         if (!isHead)
             return;
 
-//        L::d("%s - hit: %s - x: %f <> %d - %d", name, other->name, position.x, (int)round(position.x / 16), movingRight);
-        L::d("%s hit: %s - at: %s hor: %d", name, other->name, getGridPosition().toStr(), horizontal);
+        if (dynamic_cast<Mushroom *>(other)) {
+
+            auto m = dynamic_cast<Mushroom *>(other);
+
+            L::d("%s hit: %s[%d] - at: %s hor: %d ", name, other->name, m->id, getGridPosition().toStr(), horizontal);
+        } else {
+            L::d("%s hit: %s - at: %s hor: %d", name, other->name, getGridPosition().toStr(), horizontal);
+        }
 
         toggleHit();
     }
@@ -87,37 +98,30 @@ void Ghost::OnCollisionDetected(SceneObject *other) {
 
 void Ghost::toggleHorizontal() {
     horizontal = !horizontal;
-
-    // 8 cells per second * 16 pixels per cell
-    auto speed = 8 * 16 * speedMultiplier;
-
-    velocity.x = horizontal ? speed : 0;
-    velocity.y = !horizontal ? speed : 0;
 }
 
 void Ghost::toggleLeftRight() {
     movingRight = !movingRight;
-    velocity.x = -1 * velocity.x;
 }
 
 void Ghost::toggleUpDown() {
     movingDown = !movingDown;
 }
 
-void Ghost::moveToNextLine() {
-    float xPos, yPos;
-
-    alignToPrevious = true;
-
-    auto currentColumn = (int)round(position.x / 16);
-    currentColumn = (int) Math::clamp(currentColumn, 0, 29);
-
-    xPos = currentColumn * 16;
-    yPos = position.y + (movingDown ? 1 : -1) * 16;
-
-    position.x = xPos;
-    position.y = yPos;
-}
+//void Ghost::moveToNextLine() {
+//    float xPos, yPos;
+//
+//    alignToPrevious = true;
+//
+//    auto currentColumn = (int)round(position.x / 16);
+//    currentColumn = (int) Math::clamp(currentColumn, 0, 29);
+//
+//    xPos = currentColumn * 16;
+//    yPos = position.y + (movingDown ? 1 : -1) * 16;
+//
+//    position.x = xPos;
+//    position.y = yPos;
+//}
 
 void Ghost::resetGhost() {
     enable = true;
@@ -142,7 +146,9 @@ Vector2int Ghost::hitTop() {
 }
 
 void Ghost::toggleHit() {
-    if (horizontal) {
+    toggleHorizontal();
+
+    if (!horizontal) { // it is horizontal, but was just negated on the previous line
 
         // round to the right position - head always go one step further
         int currentXPos = (getGridPosition().x + (!movingRight && isHead ? 1 : 0)) * 16;
@@ -150,7 +156,7 @@ void Ghost::toggleHit() {
 
         int nextYPos = (getGridPosition().y + (movingDown ? 1 : -1)) * 16;
 
-        L::d("%s - current X: (%d,%d) - nextY: %d - hor: %d", name, currentXPos, currentYPos, nextYPos, horizontal);
+        L::d("%s - current X: (%d,%d) - nextY: %d - hor: %d - down: %d", name, currentXPos, currentYPos, nextYPos, horizontal, movingDown);
 
         position.x = currentXPos;
         position.y = currentYPos;
@@ -160,10 +166,12 @@ void Ghost::toggleHit() {
             AddHitToTail(Vector2int(currentXPos, currentYPos), false);
         }
     } else {
-
+        toggleLeftRight();
     }
 
-    toggleHorizontal();
+
+
+
 }
 
 void Ghost::AddHitToTail(Vector2int pos, bool includeHead = false) {

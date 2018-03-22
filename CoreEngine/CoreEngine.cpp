@@ -3,6 +3,7 @@
 //
 
 #include "CoreEngine.h"
+#include "../Mushroom.h"
 
 SDL_Renderer * CoreEngine::renderer = nullptr;
 std::vector<SceneObject*> CoreEngine::sceneObjects;
@@ -158,7 +159,11 @@ void CoreEngine::DestroyAll() {
 void CoreEngine::ListAllObjects() {
     for (int i = 0; i < sceneObjects.size(); ++i) {
         if (sceneObjects[i] != nullptr)
-            L::d(sceneObjects[i]->name);
+            if (auto m = dynamic_cast<Mushroom *>(sceneObjects[i])) {
+                L::d("%s[%d] - %s", sceneObjects[i]->name, m->id, sceneObjects[i]->getGridPosition().toStr());
+                L::d("%s", sceneObjects[i]->position.toStr());
+            } else
+                L::d("%s - %s - %s", sceneObjects[i]->name, sceneObjects[i]->getGridPosition().toStr(), sceneObjects[i]->position.toStr());
         else
             L::d("Scene Object is null: %d", i);
     }

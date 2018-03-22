@@ -18,6 +18,8 @@ std::vector<Ghost *> GameManager::ghosts;
 bool GameManager::gameStarted = false;
 Player * GameManager::player;
 
+int totalMush = 0;
+
 void GameManager::PrepareGame() {
 
     // create player object and add it to the scene
@@ -71,10 +73,10 @@ void GameManager::StartGame() {
 
         CoreEngine::AddSceneObject(m);
     }
-    mushrooms[0]->position = Vector2(2, 2) * 16; // debug
+    mushrooms[0]->position = Vector2(2, 1) * 16; // debug
 
     // since we wont create new ghost beyond these, we dont need a CreateGhost method
-    for (int i = 16; i < 16 + 12; ++i) {
+    for (int i = 16; i < 16 + 2; ++i) {
 
         Ghost * g = new Ghost("Ghostus");
 
@@ -96,16 +98,16 @@ void GameManager::StartGame() {
     ghosts[0]->setHead();
 
     ghosts[1]->name = "Ghost_1";
-    ghosts[2]->name = "Ghost_2";
-    ghosts[3]->name = "Ghost_3";
-    ghosts[4]->name = "Ghost_4";
-    ghosts[5]->name = "Ghost_5";
-    ghosts[6]->name = "Ghost_6";
-    ghosts[7]->name = "Ghost_7";
-    ghosts[8]->name = "Ghost_8";
-    ghosts[9]->name = "Ghost_9";
-    ghosts[10]->name = "Ghost_10";
-    ghosts[11]->name = "Ghost_11";
+//    ghosts[2]->name = "Ghost_2";
+//    ghosts[3]->name = "Ghost_3";
+//    ghosts[4]->name = "Ghost_4";
+//    ghosts[5]->name = "Ghost_5";
+//    ghosts[6]->name = "Ghost_6";
+//    ghosts[7]->name = "Ghost_7";
+//    ghosts[8]->name = "Ghost_8";
+//    ghosts[9]->name = "Ghost_9";
+//    ghosts[10]->name = "Ghost_10";
+//    ghosts[11]->name = "Ghost_11";
 }
 
 void GameManager::MushroomDestroyed(Mushroom *m) {
@@ -116,11 +118,9 @@ void GameManager::MushroomDestroyed(Mushroom *m) {
 }
 
 Mushroom * GameManager::CreateNewMushroom() {
-    std::stringstream timeText;
-    timeText.str( "" );
-    timeText << "(-" << 0;
+    auto * m = new Mushroom("Mush");
 
-    Mushroom * m = new Mushroom(timeText.str().c_str());
+    m->id = ++totalMush;
 
     // avoid reallocating new textures to save memory
     m->setSharedTexture(mushroomTemplate->getSharedTexture());

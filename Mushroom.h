@@ -9,7 +9,9 @@
 
 class Mushroom: public SceneObject {
 public:
-    Mushroom(const char *name);
+    explicit Mushroom(const char *name);
+
+    int id = 0;
 
     void OnCollisionDetected(SceneObject *other) override;
     void resetMushroom();

@@ -5,7 +5,6 @@
 #include "L.h"
 
 void L::d(const char* format, ...) {
-
     char buffer[512];
     va_list args;
     va_start (args, format);
