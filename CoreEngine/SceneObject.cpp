@@ -4,6 +4,7 @@
 
 #include "SceneObject.h"
 #include "L.h"
+#include "CoreEngine.h"
 
 SDL_Renderer * SceneObject::renderer = nullptr;
 
@@ -69,7 +70,7 @@ void SceneObject::OnCollisionDetected(SceneObject *other) {
     L::d("Generic Collision. It should be override. - other: %s", other != nullptr ? other->tag : "null");
 }
 
-SceneObject::SceneObject(const char *name) {
+SceneObject::SceneObject(const char * name) {
     this->name = name;
 }
 
@@ -80,3 +81,10 @@ bool SceneObject::isTag(const char *aTag) {
 bool SceneObject::isName(const char *aName) {
     return !strcmp(name, aName);
 }
+
+Vector2int SceneObject::getGridPosition() {
+//    L::d("%f / %f : %d", position.x, CoreEngine::getScreenSize().x, (int) ceil(position.x / CoreEngine::getScreenSize().x));
+    return {std::max((int) floor(16 * position.x / CoreEngine::getScreenSize().x), -1),
+            std::min((int) floor(16 * position.y / CoreEngine::getScreenSize().y), 15)};
+}
+

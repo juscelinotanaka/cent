@@ -71,7 +71,7 @@ void GameManager::StartGame() {
 
         CoreEngine::AddSceneObject(m);
     }
-//    mushrooms[0]->position = Vector2(29, 2) * 16; // debug
+    mushrooms[0]->position = Vector2(2, 2) * 16; // debug
 
     // since we wont create new ghost beyond these, we dont need a CreateGhost method
     for (int i = 16; i < 16 + 12; ++i) {
@@ -93,6 +93,7 @@ void GameManager::StartGame() {
 
     ghosts[0]->name = "Head";
     ghosts[0]->setImageFromPool(1);
+    ghosts[0]->setHead();
 
     ghosts[1]->name = "Ghost_1";
     ghosts[2]->name = "Ghost_2";
@@ -115,7 +116,11 @@ void GameManager::MushroomDestroyed(Mushroom *m) {
 }
 
 Mushroom * GameManager::CreateNewMushroom() {
-    Mushroom * m = new Mushroom("Mushrumor");
+    std::stringstream timeText;
+    timeText.str( "" );
+    timeText << "(-" << 0;
+
+    Mushroom * m = new Mushroom(timeText.str().c_str());
 
     // avoid reallocating new textures to save memory
     m->setSharedTexture(mushroomTemplate->getSharedTexture());
@@ -204,4 +209,20 @@ void GameManager::RespawnGhost() {
     }
 
     ghosts[0]->setImageFromPool(1);
+}
+
+std::vector<Ghost*> GameManager::getTailWithHead(Ghost *pGhost) {
+    std::vector<Ghost*> tail;
+    bool headFound = false;
+    for (int i = 0; i < ghosts.size(); ++i) {
+        if (ghosts[i] == pGhost) {
+            tail.push_back(pGhost);
+            headFound = true;
+        } else if (headFound && ghosts[i]->enable) {
+            tail.push_back(ghosts[i]);
+        } else // next item is not enable == end of a ghost
+            break;
+    }
+
+    return tail;
 }

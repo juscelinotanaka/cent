@@ -7,6 +7,7 @@
 
 
 #include "CoreEngine/CoreEngine.h"
+#include <stack>
 
 class Ghost: public SceneObject {
 public:
@@ -17,14 +18,26 @@ public:
 
     void toggleLeftRight();
     void toggleUpDown();
+    void toggleHorizontal();
     void moveToNextLine();
     void resetGhost();
-    bool alignToPrevious = false;
+    void setHead();
+
+    std::stack<Vector2int> hitStack;
+    bool hasHitStack();
+    Vector2int hitTop();
 
 private:
+    bool alignToPrevious = false;
+    bool isHead = false;
+    bool horizontal = false;
     bool movingRight = true;
     bool movingDown = true;
+    int speedMultiplier = 1;
 
+    void toggleHit();
+
+    void AddHitToTail(Vector2int pos, bool includeHead);
 };
 
 

@@ -5,7 +5,7 @@
 #include "Mushroom.h"
 #include "GameManager.h"
 
-Mushroom::Mushroom(const char *name)  : SceneObject(name) {
+Mushroom::Mushroom(const char * name)  : SceneObject(name) {
 }
 
 void Mushroom::OnCollisionDetected(SceneObject *other) {

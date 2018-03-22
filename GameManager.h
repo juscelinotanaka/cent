@@ -22,6 +22,8 @@ public:
 
     static void GhostShot(Ghost *ghost);
 
+    static std::vector<Ghost*> getTailWithHead(Ghost *pGhost);
+
 private:
     // list of mushrooms on scene
     static std::vector<Mushroom *> mushrooms;

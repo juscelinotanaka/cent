@@ -5,16 +5,16 @@
 #ifndef CENT_SCENEOBJECT_H
 #define CENT_SCENEOBJECT_H
 
-
-#include "Vector2.h"
 #include <SDL.h>
 #include <iostream>
 #include <vector>
+#include "Vector2.h"
+#include "Vector2int.h"
 
 class SceneObject {
 public:
     // attributes
-    SceneObject(const char * name);
+    explicit SceneObject(const char * name);
     const char *name;
     const char *tag;
     bool enable = true;
@@ -24,13 +24,15 @@ public:
 
     // physics
     Vector2 velocity;
-    Vector2 imageSize;
+    Vector2int imageSize;
     Vector2 getRealSize();
+
 
     // methods
     void setImage(const char *imgPath, bool onlyAddToPool = false);
     void RenderOnScreen();
     void Destroy();
+    Vector2int getGridPosition();
 
     // virtual methods
     virtual void Update();
