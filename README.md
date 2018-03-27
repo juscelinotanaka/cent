@@ -20,6 +20,8 @@ This project is divided into two parts - the `CoreEngine` and the gameplay itsel
 
 ## Core Engine
 Core Engine is a simple implementation of an game engine that I made from scratch. I took all my background on game development and created some important classes for making a game (i.e. `Time`, `Input`, `Vector2`, `Math` and a generical `SceneObject`). These classes are helpers to access some informations and process some datas more easily. `SceneObject` is one of the most important classes of the `CoreEngine` and require extra explanations.
+
+The difference between the methods `UpdateEvents` and `UpdateActions` is that UpdateEvents reads and process external information (i.e. deltaTime, Input, etc) and then the actions can be processed after we have the right state of the system.
 ### Scene Object
 `SceneObject` is the main class for the core engine. It makes a generical abstraction for objects that can show up on screen. It means it handles all the visual parts and is also ready to handle events. It implements some methods that can be overriden to proccess informations on the core engine (i.e. `DetectCollision` and `Update/Tick`). It also has some important attributes like `name`, `tag`, `updateTick`,  `imageSize`, `scale`, `imageRealSize`,  `position` and some others.
 If a `SceneObject` is added to the CoreEngine all informations of that object will be updated every frame. It means, all the gameplay object inherits from this class.
