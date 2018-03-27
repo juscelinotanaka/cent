@@ -9,7 +9,6 @@
 #include <iostream>
 #include <vector>
 #include "Vector2.h"
-#include "Vector2int.h"
 
 class SceneObject {
 public:
@@ -24,7 +23,7 @@ public:
 
     // physics
     Vector2 velocity;
-    Vector2int imageSize;
+    Vector2 imageSize;
     Vector2 getRealSize();
 
 
@@ -32,7 +31,7 @@ public:
     void setImage(const char *imgPath, bool onlyAddToPool = false);
     void RenderOnScreen();
     void Destroy();
-    Vector2int getGridPosition();
+    Vector2 getGridPosition();
 
     // virtual methods
     virtual void Update();

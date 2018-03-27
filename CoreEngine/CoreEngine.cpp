@@ -62,7 +62,12 @@ bool CoreEngine::overlaps(SceneObject *objA, SceneObject *objB) {
     bottomB = objB->position.y + objB->getRealSize().y;
 
     //If any of the sides from A are outside of B
-    return !(bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB);
+    if (!(bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)) {
+//        L::d("%d <= %d - %d >= %d - %d <= %d - %d >= %d",
+//             bottomA, topB, topA, bottomB, rightA, leftB, leftA, rightB);
+        return true;
+    }
+    return false;
 
 }
 

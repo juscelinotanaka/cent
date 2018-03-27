@@ -19,13 +19,12 @@ public:
     void toggleLeftRight();
     void toggleUpDown();
     void toggleHorizontal();
-    void moveToNextLine();
     void resetGhost();
     void setHead();
 
-    std::stack<Vector2int> hitStack;
+    std::stack<Vector2> hitStack;
     bool hasHitStack();
-    Vector2int hitTop();
+    Vector2 hitTop();
 
 private:
     bool alignToPrevious = false;
@@ -35,9 +34,11 @@ private:
     bool movingDown = true;
     int speedMultiplier = 1;
 
-    void toggleHit();
+    void AddHitToTail(Vector2 pos, bool includeHead);
 
-    void AddHitToTail(Vector2int pos, bool includeHead);
+    void toggleHit(Vector2 objPos);
+
+    bool waitingToPop;
 };
 
 

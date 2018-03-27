@@ -74,6 +74,7 @@ void GameManager::StartGame() {
         CoreEngine::AddSceneObject(m);
     }
     mushrooms[0]->position = Vector2(2, 1) * 16; // debug
+    mushrooms[1]->position = Vector2(1, 2) * 16; // debug
 
     // since we wont create new ghost beyond these, we dont need a CreateGhost method
     for (int i = 16; i < 16 + 2; ++i) {

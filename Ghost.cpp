@@ -42,34 +42,22 @@ void Ghost::Update() {
 //    }
 
     if (hasHitStack()) {
-        int topx = hitTop().x;
-        int topy = hitTop().y;
         auto cur = getGridPosition() * 16;
 
-        bool equal = topx == cur.x && cur.y == topy;
-
-//        L::d("%s -total: %d - topx: %d, %d - cur: %s",
-//             name,
-//             hitStack.size(),
-//             topx,
-//             topy,
-//            cur.toStr());
-
         if (hitTop() == (getGridPosition() * 16)) {
-            toggleHit();
+            L::d("%s - got into: %s", name, hitTop().toStr());
+            auto pos = getGridPosition();
+            pos.x = pos.x + (movingRight ? 0 : 0);
+            toggleHit(pos);
             hitStack.pop();
         }
-
     }
 
-
-//    if (position.y < 0 || position.y >= CoreEngine::getScreenSize().y) {
-//        toggleUpDown();
-//        // make it move back to the last line (up or down)
-//        moveToNextLine();
-//        // make it move to the next line (otherwise it will just come back on the same line)
-//        moveToNextLine();
-//    }
+    if (isHead && (position.y < 0 || position.y >= CoreEngine::getScreenSize().y)) {
+        toggleUpDown();
+//        toggleHit();
+//        toggleHit();
+    }
 }
 
 void Ghost::OnCollisionDetected(SceneObject *other) {
@@ -80,8 +68,14 @@ void Ghost::OnCollisionDetected(SceneObject *other) {
 //        L::d("player dies to: %s", name);
     } else if (other->isTag("Mushroom") || other->isTag("Wall")) {
 
-        if (!isHead)
+        if (!isHead
+//            || (!hitStack.empty() && other->getGridPosition() * 16 == hitTop())
+            || other->getGridPosition() != getGridPosition()
+                ) {
+//            L::d("returning: %s", other->getGridPosition().toStr());
+//            L::d("::: %s", getGridPosition().toStr());
             return;
+        }
 
         if (dynamic_cast<Mushroom *>(other)) {
 
@@ -92,36 +86,24 @@ void Ghost::OnCollisionDetected(SceneObject *other) {
             L::d("%s hit: %s - at: %s hor: %d", name, other->name, getGridPosition().toStr(), horizontal);
         }
 
-        toggleHit();
+        toggleHit(other->getGridPosition());
     }
 }
 
 void Ghost::toggleHorizontal() {
     horizontal = !horizontal;
+    L::d("%s - new direc: %s", name, (horizontal ? "horizontal" : "vertical"));
 }
 
 void Ghost::toggleLeftRight() {
     movingRight = !movingRight;
+    L::d("%s - turning to: %s", name, (movingRight ? "right" : "left"));
 }
 
 void Ghost::toggleUpDown() {
     movingDown = !movingDown;
+    L::d("%s - moving: %s", name, (movingDown ? "down" : "up"));
 }
-
-//void Ghost::moveToNextLine() {
-//    float xPos, yPos;
-//
-//    alignToPrevious = true;
-//
-//    auto currentColumn = (int)round(position.x / 16);
-//    currentColumn = (int) Math::clamp(currentColumn, 0, 29);
-//
-//    xPos = currentColumn * 16;
-//    yPos = position.y + (movingDown ? 1 : -1) * 16;
-//
-//    position.x = xPos;
-//    position.y = yPos;
-//}
 
 void Ghost::resetGhost() {
     enable = true;
@@ -141,29 +123,29 @@ bool Ghost::hasHitStack() {
     return hitStack.size() > 0;
 }
 
-Vector2int Ghost::hitTop() {
+Vector2 Ghost::hitTop() {
     return hitStack.top();
 }
 
-void Ghost::toggleHit() {
+void Ghost::toggleHit(Vector2 objPos) {
     toggleHorizontal();
 
     if (!horizontal) { // it is horizontal, but was just negated on the previous line
 
         // round to the right position - head always go one step further
-        int currentXPos = (getGridPosition().x + (!movingRight && isHead ? 1 : 0)) * 16;
-        int currentYPos = getGridPosition().y * 16;
+        int othersXPos = (objPos.x + (isHead && movingRight ? -1 : 1));
+        int othersYPos = objPos.y;
 
-        int nextYPos = (getGridPosition().y + (movingDown ? 1 : -1)) * 16;
+        int nextYPos = (objPos.y + (movingDown ? 1 : -1));
+        L::d("pos: %s", objPos.toStr());
 
-        L::d("%s - current X: (%d,%d) - nextY: %d - hor: %d - down: %d", name, currentXPos, currentYPos, nextYPos, horizontal, movingDown);
+        L::d("%s - current X: (%d,%d) - nextY: %d - hor: %d - down: %d", name, othersXPos, othersYPos, nextYPos, horizontal, movingDown);
 
-        position.x = currentXPos;
-        position.y = currentYPos;
+        position.x = othersXPos * 16;
 
         if (isHead) {
-            AddHitToTail(Vector2int(currentXPos, nextYPos), true);
-            AddHitToTail(Vector2int(currentXPos, currentYPos), false);
+            AddHitToTail(Vector2(othersXPos, nextYPos) * 16, true);
+            AddHitToTail(Vector2(othersXPos, othersYPos) * 16, false);
         }
     } else {
         toggleLeftRight();
@@ -174,7 +156,7 @@ void Ghost::toggleHit() {
 
 }
 
-void Ghost::AddHitToTail(Vector2int pos, bool includeHead = false) {
+void Ghost::AddHitToTail(Vector2 pos, bool includeHead = false) {
     std::vector<Ghost *> tail = GameManager::getTailWithHead(this);
     for (int i = includeHead ? 0 : 1; i < tail.size(); ++i) {
         L::d("added %s to %s", pos.toStr(), tail[i]->name);

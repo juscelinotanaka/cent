@@ -82,7 +82,7 @@ bool SceneObject::isName(const char *aName) {
     return !strcmp(name, aName);
 }
 
-Vector2int SceneObject::getGridPosition() {
+Vector2 SceneObject::getGridPosition() {
 //    L::d("%f / %f : %d", position.x, CoreEngine::getScreenSize().x, (int) ceil(position.x / CoreEngine::getScreenSize().x));
     return {std::max((int) floor(30 * (position.x+0.001) / CoreEngine::getScreenSize().x), -1),
             std::min((int) floor(30 * (position.y+0.001) / CoreEngine::getScreenSize().y), 29)};
