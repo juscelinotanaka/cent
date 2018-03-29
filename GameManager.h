@@ -15,7 +15,7 @@ public:
     static void PrepareGame();
     static void StartGame();
 
-    static void MushroomDestroyed(Mushroom *m);
+    static void MushroomDestroyed(Mushroom *m, bool skipScore = false);
     static Ghost *GetPreviousGhost(Ghost *me);
 
     static bool isGameStarted();
@@ -23,6 +23,8 @@ public:
     static void GhostShot(Ghost *ghost);
 
     static std::vector<Ghost*> getTailWithHead(Ghost *pGhost);
+
+    static void PlayerDies();
 
 private:
     // list of mushrooms on scene
@@ -48,6 +50,8 @@ private:
     static void CheckWinningCondition();
 
     static void RespawnGhost();
+
+    static void ResetHead();
 };
 
 

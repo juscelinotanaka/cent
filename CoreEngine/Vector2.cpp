@@ -22,3 +22,11 @@ const char *Vector2::toStr(int precision) {
 
     return timeText.str().c_str();
 }
+
+Vector2::operator const char *() {
+    std::stringstream timeText;
+    timeText.str( "" );
+    timeText << "(" << x << ", " << y << ")";
+
+    return timeText.str().c_str();
+}

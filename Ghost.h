@@ -22,23 +22,21 @@ public:
     void resetGhost();
     void setHead();
 
-    std::stack<Vector2> hitStack;
-    bool hasHitStack();
-    Vector2 hitTop();
+    std::stack<Vector2> turnStack;
+    bool hasTurnStack();
+    Vector2 turnTop();
 
 private:
     bool alignToPrevious = false;
     bool isHead = false;
-    bool horizontal = false;
-    bool movingRight = true;
+    bool horizontal = true;
+    bool movingLeft = true;
     bool movingDown = true;
     int speedMultiplier = 1;
-
-    void AddHitToTail(Vector2 pos, bool includeHead);
-
-    void toggleHit(Vector2 objPos);
-
-    bool waitingToPop;
+    void AddTurnPosition(Vector2 pos, bool includeHead = false);
+    void hitOnPos(Vector2 objPos);
+    bool IgnoreMushroomPosition(Vector2 pos);
+    Vector2 ignorePos;
 };
 
 

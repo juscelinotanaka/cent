@@ -24,6 +24,7 @@ void GameManager::PrepareGame() {
 
     // create player object and add it to the scene
     player = new Player("Main Char");
+    player->position = Vector2((int) 15.5 * 16, 27 * 16);
     player->scale = Vector2::one * 2;
     CoreEngine::AddSceneObject(player);
 
@@ -74,7 +75,7 @@ void GameManager::StartGame() {
         CoreEngine::AddSceneObject(m);
     }
     mushrooms[0]->position = Vector2(2, 1) * 16; // debug
-    mushrooms[1]->position = Vector2(1, 2) * 16; // debug
+    mushrooms[1]->position = Vector2(3, 1) * 16; // debug
 
     // since we wont create new ghost beyond these, we dont need a CreateGhost method
     for (int i = 16; i < 16 + 2; ++i) {
@@ -94,9 +95,7 @@ void GameManager::StartGame() {
         CoreEngine::AddSceneObject(g);
     }
 
-    ghosts[0]->name = "Head";
-    ghosts[0]->setImageFromPool(1);
-    ghosts[0]->setHead();
+    ResetHead();
 
     ghosts[1]->name = "Ghost_1";
 //    ghosts[2]->name = "Ghost_2";
@@ -111,11 +110,14 @@ void GameManager::StartGame() {
 //    ghosts[11]->name = "Ghost_11";
 }
 
-void GameManager::MushroomDestroyed(Mushroom *m) {
+// remove a mushroom from the scene and add a score point if the skipScore is not true
+void GameManager::MushroomDestroyed(Mushroom *m, bool skipScore) {
     m->enable = false;
     mushrooms.erase(std::remove(mushrooms.begin(), mushrooms.end(), m), mushrooms.end());
     mushroomPool.push_back(m);
-    mushroomsDestroyed++;
+    if (!skipScore) {
+        mushroomsDestroyed++;
+    }
 }
 
 Mushroom * GameManager::CreateNewMushroom() {
@@ -198,18 +200,21 @@ void GameManager::CheckWinningCondition() {
 }
 
 void GameManager::RespawnGhost() {
+
     for (int i = 0; i < mushrooms.size(); ++i) {
-        auto m = mushrooms[i];
-        if (0 == (int)round(m->position.y)) {
-            m->enable = false;
+        if (mushrooms[i]->getGridPosition().y == 0 &&
+            mushrooms[i]->getGridPosition().x >= 16) {
+            MushroomDestroyed(mushrooms[i], true);
         }
     }
-    for (int i = 0; i < 12; ++i) {
+
+    for (int i = 0; i < ghosts.size(); ++i) {
         ghosts[i]->resetGhost();
         ghosts[i]->position = Vector2((16+i), 0) * 16;
+
     }
 
-    ghosts[0]->setImageFromPool(1);
+    ResetHead();
 }
 
 std::vector<Ghost*> GameManager::getTailWithHead(Ghost *pGhost) {
@@ -226,4 +231,15 @@ std::vector<Ghost*> GameManager::getTailWithHead(Ghost *pGhost) {
     }
 
     return tail;
+}
+
+void GameManager::PlayerDies() {
+    RespawnGhost();
+}
+
+
+void GameManager::ResetHead() {
+    ghosts[0]->name = "Head";
+    ghosts[0]->setImageFromPool(1);
+    ghosts[0]->setHead();
 }

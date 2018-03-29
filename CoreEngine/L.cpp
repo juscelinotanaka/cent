@@ -5,6 +5,8 @@
 #include "L.h"
 
 void L::d(const char* format, ...) {
+//    return;
+    // log may not work on Windows .-.
     char buffer[512];
     va_list args;
     va_start (args, format);
