@@ -7,7 +7,7 @@
 
 
 #include "CoreEngine/CoreEngine.h"
-#include <stack>
+#include <vector>
 
 class Ghost: public SceneObject {
 public:
@@ -22,9 +22,10 @@ public:
     void resetGhost();
     void setHead();
 
-    std::stack<Vector2> turnStack;
+    std::vector<Vector2> turnStack;
     bool hasTurnStack();
     Vector2 turnTop();
+    bool invertNextHorizontal = false;
 
 private:
     bool alignToPrevious = false;
@@ -37,6 +38,9 @@ private:
     void hitOnPos(Vector2 objPos);
     bool IgnoreMushroomPosition(Vector2 pos);
     Vector2 ignorePos;
+    Vector2 previousHead;
+
+    void RemoveTurnPositionFromTail(Vector2 pos);
 };
 
 

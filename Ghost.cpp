@@ -15,6 +15,8 @@ void Ghost::hitOnPos(Vector2 objPos) {
     if (!isHead)
         return;
 
+
+
     if (horizontal) { // it is horizontal, but was just negated on the previous line
 
         // round to the right position - head always go one step further
@@ -28,11 +30,17 @@ void Ghost::hitOnPos(Vector2 objPos) {
 
         position.x = nextLineTurnX * 16;
 
+        L::d("prev: %s", previousHead.toStr());
+        L::d("obj: %s", objPos.toStr());
+        if (previousHead == Vector2(tailTurnX, tailTurnY)) {
+            RemoveTurnPositionFromTail(Vector2(tailTurnX, tailTurnY));
+        } else {
+            // set next turn to every part of the tail
+            AddTurnPosition(Vector2(tailTurnX, tailTurnY), false);
+        }
+
         // set next turn on next line for everybody - including head
         AddTurnPosition(Vector2(nextLineTurnX, nextLineTurnY), true);
-
-        // set next turn to every part of the tail
-        AddTurnPosition(Vector2(tailTurnX, tailTurnY), false);
     }
 
     toggleHorizontal();
@@ -55,15 +63,28 @@ void Ghost::Update() {
         if (turnTop() == getGridPosition()) {
             L::d("%s - got into: %s", name, turnTop().toStr());
 
+            // realign itens to grid to avoid collision twice
             if (!isHead && horizontal)
                 position.x = (getGridPosition().x + (movingLeft ? 1 : 0)) * 16;
 
-            if (!horizontal)
+            // ignores if more than one line
+            if (!horizontal && !invertNextHorizontal) {
                 toggleLeftRight();
+            }
+
+            if (!horizontal) {
+                position.y = (turnTop().y) * 16;
+                invertNextHorizontal = false;
+            }
+
             toggleHorizontal();
 
             ignorePos = turnTop();
-            turnStack.pop();
+            L::d("%s - erasing: %s", name, turnTop().toStr());
+            if (isHead)
+                previousHead = turnTop();
+
+            turnStack.erase(std::remove(turnStack.begin(), turnStack.end(), turnTop()), turnStack.end());
 
             if (hasTurnStack()) {
                 L::d("%s - new Top: %s", name, turnTop().toStr());
@@ -143,18 +164,35 @@ bool Ghost::hasTurnStack() {
 }
 
 Vector2 Ghost::turnTop() {
-    return turnStack.top();
+    return turnStack.front();
 }
 
 void Ghost::AddTurnPosition(Vector2 pos, bool includeHead) {
     std::vector<Ghost *> tail = GameManager::getTailWithHead(this);
     for (int i = includeHead ? 0 : 1; i < tail.size(); ++i) {
-        tail[i]->turnStack.push(pos);
+        tail[i]->turnStack.push_back(pos);
         L::d("added %s to %s", pos.toStr(), tail[i]->name);
     }
 }
 
 bool Ghost::IgnoreMushroomPosition(Vector2 pos) {
     return hasTurnStack() ? (turnTop() == pos || ignorePos == pos) :  ignorePos == pos;
+}
+
+void Ghost::RemoveTurnPositionFromTail(Vector2 pos) {
+    std::vector<Ghost *> tail = GameManager::getTailWithHead(this);
+    for (int i = 1; i < tail.size(); ++i) {
+        L::d("removing: %d", tail[i]->turnStack.size());
+        for (int j = 0; j < tail[i]->turnStack.size(); ++j) {
+            if (tail[i]->turnStack[j] == pos) {
+                tail[i]->turnStack.erase(std::remove(tail[i]->turnStack.begin(), tail[i]->turnStack.end(),
+                                                     tail[i]->turnStack[j]), tail[i]->turnStack.end());
+            }
+
+        }
+
+        tail[i]->invertNextHorizontal = !tail[i]->invertNextHorizontal;
+        L::d("removed? %d", tail[i]->turnStack.size());
+    }
 }
 
