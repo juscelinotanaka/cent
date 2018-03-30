@@ -44,6 +44,7 @@ int main()
 //        L::d("fps: %f (%f) - mouse pos: %s", Time::fps, Time::deltaTime, Input::mousePosition.toStr());
     }
 
+    SDL_SetRelativeMouseMode(SDL_FALSE);
     CoreEngine::DestroyAll();
 
     SDL_DestroyRenderer(renderer);

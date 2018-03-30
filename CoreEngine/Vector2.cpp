@@ -30,3 +30,7 @@ Vector2::operator const char *() {
 
     return timeText.str().c_str();
 }
+
+Vector2 Vector2::lerp(Vector2 a, Vector2 b, float t) {
+    return a + (b - a) * t;
+}

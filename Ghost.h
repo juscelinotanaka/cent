@@ -21,26 +21,24 @@ public:
     void toggleHorizontal();
     void resetGhost();
     void setHead();
+    void hit();
+    bool notUpdatedYet();
 
     std::vector<Vector2> turnStack;
-    bool hasTurnStack();
-    Vector2 turnTop();
-    bool invertNextHorizontal = false;
+
+    void setStartPos(int x, int y);
+    Vector2 getFromPos () { return fromPos; }
+    Vector2 getToPos () { return toPos; }
 
 private:
-    bool alignToPrevious = false;
     bool isHead = false;
     bool horizontal = true;
     bool movingLeft = true;
     bool movingDown = true;
-    int speedMultiplier = 1;
-    void AddTurnPosition(Vector2 pos, bool includeHead = false);
-    void hitOnPos(Vector2 objPos);
-    bool IgnoreMushroomPosition(Vector2 pos);
-    Vector2 ignorePos;
-    Vector2 previousHead;
+    int tickCount;
+    Vector2 fromPos, toPos, previousPos;
 
-    void RemoveTurnPositionFromTail(Vector2 pos);
+    Vector2 getNextHeadPos();
 };
 
 

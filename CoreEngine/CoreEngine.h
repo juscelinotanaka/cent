@@ -28,6 +28,7 @@ public:
 
     static bool QuitApplication();
     static void AddSceneObject(SceneObject *object);
+    static void AddSceneObjectAtBegin(SceneObject *object);
 
     static void setGlobalRenderer(SDL_Renderer *pRenderer);
 

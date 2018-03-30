@@ -141,9 +141,12 @@ void CoreEngine::setGlobalRenderer(SDL_Renderer *pRenderer) {
 }
 
 void CoreEngine::AddSceneObject(SceneObject *object) {
-    auto s = object;
-
     sceneObjects.push_back(object);
+}
+
+
+void CoreEngine::AddSceneObjectAtBegin(SceneObject *object) {
+    sceneObjects.insert(sceneObjects.begin(), object);
 }
 
 void CoreEngine::setScreenSize(Vector2 scrSize) {
@@ -177,6 +180,7 @@ void CoreEngine::ListAllObjects() {
 void CoreEngine::setWindow(SDL_Window *pWindow) {
     window = pWindow;
 }
+
 
 
 

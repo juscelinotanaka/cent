@@ -18,6 +18,8 @@ std::vector<Ghost *> GameManager::ghosts;
 bool GameManager::gameStarted = false;
 Player * GameManager::player;
 
+bool GameManager::grid[30][30];
+
 int totalMush = 0;
 
 void GameManager::PrepareGame() {
@@ -27,20 +29,6 @@ void GameManager::PrepareGame() {
     player->position = Vector2((int) 15.5 * 16, 27 * 16);
     player->scale = Vector2::one * 2;
     CoreEngine::AddSceneObject(player);
-
-    SceneObject * w = new SceneObject("Left Wall");
-    w->setImage("data/Laser.bmp");
-    w->tag = "Wall";
-    w->scale = Vector2(32, 60);
-    w->position = Vector2(-32, 0);
-    CoreEngine::AddSceneObject(w);
-
-    w = new SceneObject("Right Wall");
-    w->setImage("data/Laser.bmp");
-    w->tag = "Wall";
-    w->scale = Vector2(32, 60);
-    w->position = Vector2(CoreEngine::getScreenSize().x, 0);
-    CoreEngine::AddSceneObject(w);
 
     // prepare one mushroom to share texture with all others
     mushroomTemplate = new Mushroom("Mushroom Template");
@@ -70,16 +58,33 @@ void GameManager::StartGame() {
         mushrooms.push_back(m);
 
         int column = rand() % 30;
-        m->position = Vector2(column, i) * 16;
+        auto gridPos = Vector2(column, i);
+
+        // debug porpuse
+        switch (i) {
+            case 1: gridPos = Vector2(1, 0); break;
+            case 2: gridPos = Vector2(3, 1); break;
+            case 3: gridPos = Vector2(1, 2); break;
+        }
+
+        grid[gridPos.x][gridPos.y] = true;
+        m->position = gridPos * 16;
 
         CoreEngine::AddSceneObject(m);
     }
-    mushrooms[0]->position = Vector2(1, 0) * 16; // debug
-    mushrooms[1]->position = Vector2(3, 1) * 16; // debug
-    mushrooms[2]->position = Vector2(1, 2) * 16; // debug
+
+    // print grid
+//    for (int i = 0; i < 30; ++i) {
+//        char line[30];
+//        for (int j = 0; j < 30; ++j) {
+//            line[j] = grid[j][i] == 1 ? '1' : '0';
+//        }
+//        L::d("%s", line);
+//    }
 
     // since we wont create new ghost beyond these, we dont need a CreateGhost method
-    for (int i = 16; i < 16 + 12; ++i) {
+    int totalGhosts = 12;
+    for (int i = 0; i < totalGhosts; ++i) {
         Ghost * g = new Ghost("Ghostus");
 
         // avoid reallocating new textures to save memory
@@ -88,7 +93,9 @@ void GameManager::StartGame() {
         g->setSharedTexture(ghostTemplate->getSharedTexture());
         g->setImageFromPool(0);
         g->scale = Vector2::one * 2;
-        g->position = Vector2(i, 0) * 16;
+
+        auto pos = Vector2(16 + i, 0);
+        g->setStartPos(pos.x, pos.y);
 
         ghosts.push_back(g);
 
@@ -135,7 +142,7 @@ Mushroom * GameManager::CreateNewMushroom() {
     return m;
 }
 
-Ghost * GameManager::GetPreviousGhost(Ghost *me) {
+Ghost * GameManager::getPreviousGhost(Ghost *me) {
     for (int i = 0; i < ghosts.size(); ++i) {
         if (ghosts[i] == me) {
             return i == 0 || !ghosts[i]->enable ? nullptr : ghosts[i - 1];
@@ -157,14 +164,14 @@ void GameManager::GhostShot(Ghost *ghost) {
         if (found == ghost) {
             found->enable = false;
             if (i < ghosts.size() - 1 && ghosts[i + 1]->enable) {
-                ghosts[i + 1]->setImageFromPool(1);
+                ghosts[i + 1]->hit();
             }
             break;
         }
     }
 
     auto newMushroom = GetMushroomFromPool();
-    newMushroom->position = ghost->position;
+    newMushroom->position = ghost->getToPos() * 16;
 
     CheckWinningCondition();
 }
@@ -217,29 +224,16 @@ void GameManager::RespawnGhost() {
     ResetHead();
 }
 
-std::vector<Ghost*> GameManager::getTailWithHead(Ghost *pGhost) {
-    std::vector<Ghost*> tail;
-    bool headFound = false;
-    for (int i = 0; i < ghosts.size(); ++i) {
-        if (ghosts[i] == pGhost) {
-            tail.push_back(pGhost);
-            headFound = true;
-        } else if (headFound && ghosts[i]->enable) {
-            tail.push_back(ghosts[i]);
-        } else // next item is not enable == end of a ghost
-            break;
-    }
-
-    return tail;
-}
-
 void GameManager::PlayerDies() {
     RespawnGhost();
 }
-
 
 void GameManager::ResetHead() {
     ghosts[0]->name = "Head";
     ghosts[0]->setImageFromPool(1);
     ghosts[0]->setHead();
+}
+
+bool GameManager::hasMushroomAt(Vector2 pos) {
+    return grid[pos.x][pos.y];
 }
