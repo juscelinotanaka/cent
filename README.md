@@ -40,7 +40,7 @@ It is good to know that a lot of images are similar in this project and each obj
 
 On the `PrepareGame` method is created a copy/template of a mushroom and a ghost to hold their necessary textures. Each object has its own pool texture that will be shared with the objects when they are created later (on the `SpawnGame` method). It means the new objects will not need to instantiate textures again, they will just get a copy of the texture pool created previously. In this way a lot of memory is saved.
 
-An extra pool is also created specifically for Mushrooms. Since its has a lot of creation/destruction actions that can be a heavier process (because it involves surfaces and textures, as well as reading a file from disk) mushrooms have a list of mushrooms on scene (`mushrooms`) and a pool of mushrooms that holds those mushrooms that were already destroyed (`mushroomPool`). In case the game requests a new mushroom it will first check if there is any available on the pool before spending time on creating a new from disk.
+An extra pool is also created specifically for Mushrooms. Since its has a lot of creation/destruction actions that can be a heavier process (because it involves surfaces and textures, as well as reading a file from disk) mushrooms have a list of mushrooms on scene (`mushrooms`) and a pool of mushrooms that holds those mushrooms that were already destroyed (`mushroomPool`). In case the game requests a new mushroom it will first check if there is any available on the pool before spending time on creating a new from disk. Also, all mushrooms are created at the beginning of the vector to make them always be under the ghost when overlapping.
 
 ## Ghost Class
 This was the trickiest class on the project. This class took almost half of the time of the project, since all the complexities are centered here and the game depends on it to behave correctly. A first implementation was done using a time-dependent model, were each ghost moved independently. It was not good because they lost sync and created some empty space between ghost parts. It was also hard to handle collision events and propagate it to the tail. Sometimes tail got lost and the game got crazy.
@@ -63,6 +63,9 @@ Times will be detailed by parts:
  - Ghost refactoring - 8-10 hours
 	 - Ghost was firstly implemented like the "Atari" version (moving the whole sprite to the next line), but it was buggy yet. It was overriden on commit 711d1fb.
 - Logo, score and others - ~1 hours
+
+### Compiling
+This project was developed on MacOS using CLion (cmake-friendly) but a final version was run on Windows using Visual Studio 2017. Both IDEs should be able to open and run the project.
 
 ### Copyrights
 This project cannot be copied or reused for any purpouse. The images rights are not mine, except the logo image.
