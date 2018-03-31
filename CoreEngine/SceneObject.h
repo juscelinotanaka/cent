@@ -19,8 +19,10 @@ public:
     bool enable = true;
     bool tickUpdate = false;
     bool enableCollision = false;
+    double rotationZ = 0;
     Vector2 position;
-    Vector2 scale = Vector2(1, 1);
+    Vector2 scale = Vector2::one;
+    Vector2 center = Vector2::zero;
 
     // physics
     Vector2 velocity = Vector2::zero;

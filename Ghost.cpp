@@ -55,7 +55,7 @@ void Ghost::toggleHorizontal() {
 
 void Ghost::toggleLeftRight() {
     movingLeft = !movingLeft;
-//    L::d("%s - turning to: %s", name, (movingLeft ? "right" : "left"));
+//    L::d("%s - turning to: %s", name, (movingLeft ? "left" : "right"));
 }
 
 void Ghost::toggleUpDown() {
@@ -86,7 +86,7 @@ Vector2 Ghost::getNextHeadPos() {
     auto newPos = fromPos.withXplus(horizontal ? (movingLeft ? -1 : 1) : 0).withYplus(!horizontal ? (movingDown ? 1 : -1) : 0);
 
     // if new pos goes off screen horizontally or hit mushroom move it up or down
-    if (GameManager::hasMushroomAt(newPos) || newPos.x == -1 || newPos.x == 30) {
+    if (GameManager::hasMushroomAt(newPos) || newPos.x == -1  || newPos.x == 30) {
         toggleHorizontal();
         newPos = fromPos.withXplus(horizontal ? (movingLeft ? -1 : 1) : 0).withYplus(!horizontal ? (movingDown ? 1 : -1) : 0);
     }
@@ -106,11 +106,16 @@ void Ghost::setStartPos(int x, int y) {
     tickCount = 0;
 }
 
-void Ghost::hit() {
+void Ghost::setAsHead(Ghost *head) {
     setImageFromPool(1);
     isHead = true;
+    if (head != nullptr) {
+        horizontal = head->horizontal;
+        movingLeft = head->movingLeft;
+        movingDown = head->movingDown;
+    }
 }
 
-bool Ghost::notUpdatedYet() {
-    return tickCount % tickSteps == 0;
+bool Ghost::IsHead() {
+    return isHead;
 }

@@ -11,12 +11,12 @@ Vector2 Vector2::one = Vector2(1,1);
 
 Vector2::Vector2() = default;
 
-Vector2::Vector2(int x, int y) {
+Vector2::Vector2(float x, float y) {
     this->x = x;
     this->y = y;
 }
 
-const char *Vector2::toStr(int precision) {
+const char *Vector2::toStr(float precision) {
     std::stringstream timeText;
     timeText.str( "" );
     timeText << "(" << x << ", " << y << ")";

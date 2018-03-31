@@ -57,29 +57,6 @@ void GameManager::SpawnGame() {
     srand(time(NULL));
 
     gameStarted = true;
-    // skip first line to avoid conflicts with ghost spawn
-    // skip the last two lines, because player will not be able to kill the mushroom on the 30th line
-    // and it can be tricky to pass under the mushroom on the 29th line
-    for (int i = 1; i < 28; ++i) {
-        Mushroom *m = CreateNewMushroom();
-
-        mushrooms.push_back(m);
-
-        int column = rand() % 30;
-        auto gridPos = Vector2(column, i);
-
-        // debug - force mushrooms at specific spots
-//        switch (i) {
-//            case 1: gridPos = Vector2(1, 0); break;
-//            case 2: gridPos = Vector2(3, 1); break;
-//            case 3: gridPos = Vector2(1, 2); break;
-//        }
-
-        grid[gridPos.x][gridPos.y] = true;
-        m->position = gridPos * 16;
-
-        CoreEngine::AddSceneObjectAtBegin(m);
-    }
 
     // since we wont create new ghost beyond these, we dont need a CreateGhost method
     int totalGhosts = 12;
@@ -101,6 +78,30 @@ void GameManager::SpawnGame() {
         CoreEngine::AddSceneObject(g);
     }
 
+    // skip first line to avoid conflicts with ghost spawn
+    // skip the last two lines, because player will not be able to kill the mushroom on the 30th line
+    // and it can be tricky to pass under the mushroom on the 29th line
+    for (int i = 1; i < 28; ++i) {
+        Mushroom *m = CreateNewMushroom();
+
+        mushrooms.push_back(m);
+
+        int column = rand() % 30;
+        auto gridPos = Vector2(column, i);
+
+        // debug - force mushrooms at specific spots
+//        switch (i) {
+//            case 1: gridPos = Vector2(1, 0); break;
+//            case 2: gridPos = Vector2(3, 1); break;
+//            case 3: gridPos = Vector2(1, 2); break;
+//        }
+
+        grid[(int)gridPos.x][(int)gridPos.y] = true;
+        m->position = gridPos * 16;
+    }
+
+
+
     ResetHead();
 
     ghosts[1]->name = "Ghost_1";
@@ -119,7 +120,7 @@ void GameManager::SpawnGame() {
 // remove a mushroom from the scene and add a score point if the skipScore is not true
 void GameManager::MushroomDestroyed(Mushroom *m, bool skipScore) {
     m->enable = false;
-    grid[m->getGridPosition().x][m->getGridPosition().y] = false;
+    grid[(int)m->getGridPosition().x][(int)m->getGridPosition().y] = false;
     mushrooms.erase(std::remove(mushrooms.begin(), mushrooms.end(), m), mushrooms.end());
     mushroomPool.push_back(m);
     if (!skipScore) {
@@ -138,6 +139,7 @@ Mushroom * GameManager::CreateNewMushroom() {
     m->setImageFromPool(0);
     m->imageSize = mushroomTemplate->imageSize;
     m->scale = Vector2::one * 2;
+    CoreEngine::AddSceneObjectAtBegin(m);
 
     return m;
 }
@@ -156,15 +158,34 @@ bool GameManager::isGameStarted() {
     return gameStarted;
 }
 
+Ghost* GameManager::getHeadFor(Ghost *pGhost) {
+    Ghost * lastHead;
+    bool foundMe = false;
+    for (int i = 0; i < ghosts.size(); ++i) {
+        if (ghosts[i]->IsHead()) {
+            lastHead = ghosts[i];
+        }
+
+        if (ghosts[i] == pGhost) {
+            return lastHead;
+        }
+    }
+
+    return nullptr;
+}
+
+
 void GameManager::GhostShot(Ghost *ghost) {
     player->bullet.StopFire();
+
+    auto head = getHeadFor(ghost);
 
     for (int i = 0; i < ghosts.size(); ++i) {
         auto found = ghosts[i];
         if (found == ghost) {
             found->enable = false;
             if (i < ghosts.size() - 1 && ghosts[i + 1]->enable) {
-                ghosts[i + 1]->hit();
+                ghosts[i + 1]->setAsHead(head);
             }
             break;
         }
@@ -175,7 +196,8 @@ void GameManager::GhostShot(Ghost *ghost) {
     auto newMushroom = GetMushroomFromPool();
     auto pos = ghost->getToPos();
     newMushroom->position = pos * 16;
-    grid[pos.x][pos.y] = true;
+//    L::d("New Mush at: %s", pos.toStr());
+    grid[(int)pos.x][(int)pos.y] = true;
 
     CheckWinningCondition();
 }
@@ -186,12 +208,12 @@ Mushroom * GameManager::GetMushroomFromPool() {
         m = mushroomPool[mushroomPool.size() - 1];
         m->resetMushroom();
         mushroomPool.pop_back();
-        L::d("Mushroom from pool: %s - on pool: %d", m->tag, mushroomPool.size());
+//        L::d("Mushroom from pool: %s - on pool: %d", m->tag, mushroomPool.size());
 
     } else {
         m = CreateNewMushroom();
-        L::d("new Mushroom created: %s", m->tag);
-        CoreEngine::AddSceneObject(m);
+//        L::d("new Mushroom created: %s", m->tag);
+
     }
     return m;
 }
@@ -232,8 +254,14 @@ void GameManager::ResetHead() {
     ghosts[0]->setHead();
 }
 
-bool GameManager::hasMushroomAt(Vector2 pos) {
-    return grid[pos.x][pos.y];
+bool GameManager::hasMushroomAt(Vector2 pos, bool showLog) {
+    if (pos.x < 0 || pos.x > 29 || pos.y < 0 || pos.y > 29)
+        return false;
+
+    if (showLog)
+        L::d("(%d, %d) - %d", (int)pos.x, (int)pos.y, grid[(int)pos.x][(int)pos.y]);
+
+    return grid[(int)pos.x][(int)pos.y];
 }
 
 void GameManager::PrintGrid() {

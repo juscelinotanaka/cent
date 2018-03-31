@@ -10,16 +10,19 @@
 
 class Logo : public SceneObject {
 public:
+    void Update() override;
+
     bool animating = true;
     bool show = true;
     explicit Logo(const char *name);
-    void Update() override;
 
     double duration = 1;
     float lerp = 0;
 
     std::function<void()> callback = nullptr;
     void FadeOut(std::function<void()> callback);
+
+    Vector2 centerPivot;
 };
 
 

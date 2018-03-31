@@ -23,7 +23,7 @@ public:
     static void GhostShot(Ghost *ghost);
     static void PlayerDies();
     static void PrintGrid();
-    static bool hasMushroomAt(Vector2 pos);
+    static bool hasMushroomAt(Vector2 pos, bool showLog = false);
     static int mushroomsDestroyed;
     static int partsDestroyed;
     static int ghostKills;
@@ -57,6 +57,8 @@ private:
     static Logo *logo;
 
     static void SpawnGame();
+
+    static Ghost *getHeadFor(Ghost *pGhost);
 };
 
 

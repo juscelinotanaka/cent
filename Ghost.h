@@ -21,8 +21,8 @@ public:
     void toggleHorizontal();
     void resetGhost();
     void setHead();
-    void hit();
-    bool notUpdatedYet();
+    bool IsHead();
+    void setAsHead(Ghost *head);
 
     std::vector<Vector2> turnStack;
 

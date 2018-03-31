@@ -40,15 +40,14 @@ int main()
 
         if (Input::GetEscape()) {
             CoreEngine::ListAllObjects();
-            hideMouse = hideMouse == SDL_TRUE ? SDL_FALSE : SDL_TRUE;
             std::stringstream scoreText;
             scoreText.str( "" );
-            scoreText << "Your Statistics:" << std::endl
-                      << "Ghosts Killed\t\t\t: " << GameManager::ghostKills << std::endl
-                      << "Parts of Ghost Killed\t\t: " << GameManager::partsDestroyed << std::endl
-                      << "Mushrooms Destroyed\t: " << GameManager::mushroomsDestroyed << std::endl
-                      << "Deaths\t\t\t\t: " << GameManager::deaths << std::endl
-                      << "TOTAL SCORE\t\t\t: " << GameManager::getTotalScore() << std::endl;
+            scoreText << "GAME STATISTICS"              << std::endl
+                      << "Ghosts Killed\t\t\t: "        << GameManager::ghostKills << std::endl
+                      << "Parts of Ghost Killed\t\t: "  << GameManager::partsDestroyed << std::endl
+                      << "Mushrooms Destroyed\t: "      << GameManager::mushroomsDestroyed << std::endl
+                      << "Deaths\t\t\t\t: "             << GameManager::deaths << std::endl
+                      << "TOTAL SCORE\t\t\t: "          << GameManager::getTotalScore() << std::endl;
 
             L::MessageBox("Game Finished", scoreText.str().c_str());
             playerQuited = true;

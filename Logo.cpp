@@ -3,23 +3,26 @@
 //
 
 #include "Logo.h"
-#include "GameManager.h"
 
 Logo::Logo(const char *name) : SceneObject(name)
 {
     setImage("data/Ghostipede.bmp");
-    position = Vector2((30*16 - imageSize.x) / 2, (30*16 - imageSize.y) / 2 - 16);
-    scale = Vector2::zero;
+    centerPivot = Vector2((30*16 - imageSize.x) / 2, (30*16 - imageSize.y) / 2 - 16);
+    position = CoreEngine::getScreenSize() / 2;
+    center = imageSize / 2;
+//    scale = Vector2::zero;
     tickUpdate = true;
 }
 
 void Logo::Update() {
     if (animating) {
-        lerp += (float) (Time::deltaTime * duration);
+        lerp += (float) (Time::deltaTime / duration);
 
         if (show) {
+            position = Vector2::lerp(CoreEngine::getScreenSize() / 2, centerPivot, lerp);
             scale = Vector2::lerp(Vector2::zero, Vector2::one, lerp);
         } else {
+            position = Vector2::lerp(centerPivot, CoreEngine::getScreenSize() / 2, lerp);
             scale = Vector2::lerp(Vector2::one, Vector2::zero, lerp);
         }
 

@@ -41,7 +41,10 @@ void SceneObject::RenderOnScreen() {
     rect.w = (int)(imageSize.x * scale.x);
     rect.h = (int)(imageSize.y * scale.y);
 
-    SDL_RenderCopy(renderer, currentTexture, nullptr, &rect);
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    SDL_Point center {(int) this->center.x, (int) this->center.y};
+
+    SDL_RenderCopyEx(renderer, currentTexture, nullptr, &rect, rotationZ, &center, flip);
 }
 
 void SceneObject::Destroy() {
@@ -84,7 +87,7 @@ bool SceneObject::isName(const char *aName) {
 
 Vector2 SceneObject::getGridPosition() {
 //    L::d("%f / %f : %d", position.x, CoreEngine::getScreenSize().x, (int) ceil(position.x / CoreEngine::getScreenSize().x));
-    return {std::max((int) floor(30 * (position.x+0.001) / CoreEngine::getScreenSize().x), -1),
-            std::min((int) floor(30 * (position.y+0.001) / CoreEngine::getScreenSize().y), 29)};
+    return {(float) std::max(static_cast<int> (floor(30 * (position.x+0.001) / CoreEngine::getScreenSize().x)), -1),
+            (float) std::min(static_cast<int> (floor(30 * (position.y+0.001) / CoreEngine::getScreenSize().y)), 29)};
 }
 

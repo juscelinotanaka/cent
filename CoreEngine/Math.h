@@ -11,6 +11,7 @@ class Math {
 public:
     static double clamp(double x, double min, double max);
     static int signal(int left);
+    static double lerp(float a, float b, float t);
 };
 
 

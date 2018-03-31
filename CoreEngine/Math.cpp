@@ -11,3 +11,8 @@ double Math::clamp(double x, double min, double max) {
 int Math::signal(int number) {
     return number < 0 ? -1 : 1;
 }
+
+double Math::lerp(float a, float b, float t) {
+    t = (float) clamp(t, 0, 1);
+    return a + (b - a) * t;
+}
