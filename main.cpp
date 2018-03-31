@@ -1,5 +1,6 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
+#include <sstream>
 #include "CoreEngine/CoreEngine.h"
 #include "Player.h"
 #include "GameManager.h"
@@ -22,7 +23,8 @@ int main()
 
     GameManager::PrepareGame();
 
-    while (!CoreEngine::QuitApplication())
+    bool playerQuited = false;
+    while (!CoreEngine::QuitApplication() && !playerQuited)
     {
         CoreEngine::UpdateEvents();
 
@@ -32,16 +34,25 @@ int main()
 
         CoreEngine::UpdateRendering();
 
-        if (Input::GetEscape()) {
-            CoreEngine::ListAllObjects();
-            hideMouse = hideMouse == SDL_TRUE ? SDL_FALSE : SDL_TRUE;
-            SDL_SetRelativeMouseMode(hideMouse);
-        }
-
         if (!GameManager::isGameStarted() && Input::GetMouseUp()) {
             GameManager::StartGame();
         }
-//        L::d("fps: %f (%f) - mouse pos: %s", Time::fps, Time::deltaTime, Input::mousePosition.toStr());
+
+        if (Input::GetEscape()) {
+            CoreEngine::ListAllObjects();
+            hideMouse = hideMouse == SDL_TRUE ? SDL_FALSE : SDL_TRUE;
+            std::stringstream scoreText;
+            scoreText.str( "" );
+            scoreText << "Your Statistics:" << std::endl
+                      << "Ghosts Killed\t\t\t: " << GameManager::ghostKills << std::endl
+                      << "Parts of Ghost Killed\t\t: " << GameManager::partsDestroyed << std::endl
+                      << "Mushrooms Destroyed\t: " << GameManager::mushroomsDestroyed << std::endl
+                      << "Deaths\t\t\t\t: " << GameManager::deaths << std::endl
+                      << "TOTAL SCORE\t\t\t: " << GameManager::getTotalScore() << std::endl;
+
+            L::MessageBox("Game Finished", scoreText.str().c_str());
+            playerQuited = true;
+        }
     }
 
     SDL_SetRelativeMouseMode(SDL_FALSE);

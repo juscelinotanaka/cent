@@ -24,14 +24,7 @@ void Ghost::Update() {
         } else {
             auto prev = GameManager::getPreviousGhost(this);
             if (prev != nullptr) {
-                L::d("%s - %s: upd: %d", this->name, prev->name, prev->notUpdatedYet());
-                L::d("from: %s", fromPos.toStr());
-                L::d("prev: %s", prev->previousPos.toStr());
-                if (prev->notUpdatedYet()) {
-                    toPos = prev->getToPos();
-                } else {
-                    toPos = prev->getFromPos();
-                }
+                toPos = prev->fromPos;
             }
         }
     }
@@ -110,6 +103,7 @@ Vector2 Ghost::getNextHeadPos() {
 void Ghost::setStartPos(int x, int y) {
     fromPos = toPos = previousPos = Vector2(x, y);
     position = fromPos * 16;
+    tickCount = 0;
 }
 
 void Ghost::hit() {

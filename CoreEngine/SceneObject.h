@@ -17,21 +17,26 @@ public:
     const char *name;
     const char *tag;
     bool enable = true;
+    bool tickUpdate = false;
+    bool enableCollision = false;
     Vector2 position;
-    float rotationZ;
     Vector2 scale = Vector2(1, 1);
 
     // physics
-    Vector2 velocity;
+    Vector2 velocity = Vector2::zero;
     Vector2 imageSize;
     Vector2 getRealSize();
 
-
-    // methods
+    // methods, getters and setters
     void setImage(const char *imgPath, bool onlyAddToPool = false);
+    void setImageFromPool(int i);
+    Vector2 getGridPosition();
+    std::vector<SDL_Texture *> * getSharedTexture();
+    void setSharedTexture(std::vector<SDL_Texture *> *textures);
+    bool isTag(const char * aTag);
+    bool isName(const char * aName);
     void RenderOnScreen();
     void Destroy();
-    Vector2 getGridPosition();
 
     // virtual methods
     virtual void Update();
@@ -39,14 +44,6 @@ public:
 
     // static methods
     static void SetGlobalRenderer(SDL_Renderer *pRenderer);
-    bool tickUpdate = false;
-    bool enableCollision = false;
-
-    void setSharedTexture(std::vector<SDL_Texture *> *textures);
-    std::vector<SDL_Texture *> * getSharedTexture();
-    void setImageFromPool(int i);
-    bool isTag(const char * aTag);
-    bool isName(const char * aName);
 
 protected:
     std::vector<SDL_Texture *> texturePool;

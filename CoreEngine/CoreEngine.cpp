@@ -4,6 +4,7 @@
 
 #include "CoreEngine.h"
 #include "../Mushroom.h"
+#include "../GameManager.h"
 
 SDL_Renderer * CoreEngine::renderer = nullptr;
 std::vector<SceneObject*> CoreEngine::sceneObjects;
@@ -72,12 +73,15 @@ bool CoreEngine::overlaps(SceneObject *objA, SceneObject *objB) {
 }
 
 void CoreEngine::UpdateCollisions() {
-    for (auto s : sceneObjects) {
+    for (int i = 0; i < sceneObjects.size(); ++i) {
+        auto s = sceneObjects[i];
+
         // check colision only for those which activated collision and are enable
         if (!s->enableCollision || !s->enable)
             continue;
 
-        for (auto other : sceneObjects) {
+        for (int i = 0; i < sceneObjects.size(); ++i) {
+            auto other = sceneObjects[i];
             if (s == other || !other->enable)
                 continue;
 
@@ -96,7 +100,9 @@ void CoreEngine::UpdateEvents() {
 
 void CoreEngine::UpdateActions() {
     // loop applying all the actions for each object on scene
-    for (auto s : sceneObjects) {
+    for (int i = 0; i < sceneObjects.size(); ++i) {
+        auto s = sceneObjects[i];
+
         if (!s->tickUpdate || !s->enable)
             continue;
 
@@ -124,7 +130,8 @@ void CoreEngine::UpdateRendering() {
 
 
     // loop rendering each object on scene
-    for (auto s : sceneObjects) {
+    for (int i = 0; i < sceneObjects.size(); ++i) {
+        auto s = sceneObjects[i];
         s->RenderOnScreen();
     }
 

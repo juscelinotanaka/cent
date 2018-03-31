@@ -29,13 +29,14 @@ public:
     void setStartPos(int x, int y);
     Vector2 getFromPos () { return fromPos; }
     Vector2 getToPos () { return toPos; }
+    Vector2 getPreviousPos () { return previousPos; }
 
 private:
     bool isHead = false;
     bool horizontal = true;
     bool movingLeft = true;
     bool movingDown = true;
-    int tickCount;
+    int tickCount = 0;
     Vector2 fromPos, toPos, previousPos;
 
     Vector2 getNextHeadPos();

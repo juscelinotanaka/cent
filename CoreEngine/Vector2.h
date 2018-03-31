@@ -18,7 +18,6 @@ public:
     static Vector2 lerp(Vector2 a, Vector2 b, float t);
 
     const char *toStr(int precision = 2);
-    operator const char *  (); // NOLINT
 
     Vector2 withX(const int x) { return {x, this->y}; }
     Vector2 withY(const int y) { return {this->x, y}; }
