@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include "GameManager.h"
+#include <time.h>
 
 Mushroom * GameManager::mushroomTemplate;
 int GameManager::mushroomsDestroyed = 0;
@@ -159,7 +160,7 @@ bool GameManager::isGameStarted() {
 }
 
 Ghost* GameManager::getHeadFor(Ghost *pGhost) {
-    Ghost * lastHead;
+    Ghost * lastHead = nullptr;
     bool foundMe = false;
     for (int i = 0; i < ghosts.size(); ++i) {
         if (ghosts[i]->IsHead()) {

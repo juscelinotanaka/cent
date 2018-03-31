@@ -3,6 +3,7 @@
 //
 
 #include "L.h"
+#include <stdio.h>
 
 void L::d(const char* format, ...) {
 //    return;

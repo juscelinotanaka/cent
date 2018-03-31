@@ -7,6 +7,7 @@
 
 
 #include "CoreEngine/CoreEngine.h"
+#include <functional>
 
 class Logo : public SceneObject {
 public:
